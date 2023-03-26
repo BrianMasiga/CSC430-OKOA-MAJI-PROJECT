@@ -237,15 +237,16 @@
   <main id="main" class="main">
 
     <div class="pagetitle">
-      <nav>
-        <ol class="breadcrumb">
-          <li class="breadcrumb-item"><a href="index.html">Home </a></li>
-          <li class="breadcrumb-item active"><a href="community.html">community</a></li>
-        </ol>
-      </nav>
+        <nav>
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="index.html">Home</a></li>
+                <li class="breadcrumb-item active"><a href="community.html">Community</a></li>
+            </ol>
+        </nav>
     </div><!-- End Page Title -->
+    
     <div class="col-lg-12">
-
+    
         <form id="post-form">
             <div class="row mb-3">
                 <label for="inputUsername" class="col-sm-2 col-form-label">Username</label>
@@ -265,16 +266,16 @@
                     <textarea class="form-control" style="height: 100px" id="inputMessage" maxlength="250" required></textarea>
                 </div>
             </div>
-        
+    
             <div class="row mb-3">
                 <div class="col-sm-10 text-center mx-auto">
                     <button type="submit" class="btn btn-primary">POST TO COMMUNITY</button>
                 </div>
             </div>
         </form>
-        
+    
         <div id="posts"></div>
-        
+    
         <script>
             const postForm = document.querySelector('#post-form');
             const usernameInput = document.querySelector('#inputUsername');
@@ -292,7 +293,6 @@
                     username: usernameInput.value,
                     title: titleInput.value,
                     message: messageInput.value,
-                    rating: 0,
                     timestamp: new Date()
                 };
                 postId++;
@@ -306,29 +306,39 @@
                     <h6 class="timestamp">Posted on: ${post.timestamp.toLocaleString()}</h6>
                     <h6 class="username">Author: ${post.username}</h6>
                     <p class="message">${post.message}</p>
-                    <div class="rating">
-                        <button class="btn btn-secondary" onclick="ratePost(${post.id}, -1)">downvote </button>
-                        <span class="count">${post.rating}</span>
-                        <button class="btn btn-primary" onclick="ratePost(${post.id}, 1)"> upvote</button>
+                    <div class="actions">
+                        <button class="btn btn-primary" onclick="editPost(${post.id})">Edit</button>
+                        <button class="btn btn-danger" onclick="deletePost(${post.id})">Delete</button>
                     </div>
                     <hr>
                 `;
                 postsDiv.insertBefore(postDiv, postsDiv.firstChild);
     
-                // Reset the form
-                postForm.reset();
-            });
-    
-            function ratePost(id, rating) {
-                const postDiv = document.querySelector(`#posts .post:nth-child(${id})`);
-                const countSpan = postDiv.querySelector('.count');
-                const currentRating = parseInt(countSpan.textContent);
-                countSpan.textContent = currentRating + rating;
+                            // Reset the form
+            postForm.reset();
+        });
+
+        function editPost(id) {
+            const postDiv = document.querySelector(`#posts .post:nth-child(${id})`);
+            const messageDiv = postDiv.querySelector('.message');
+            const message = messageDiv.textContent.trim();
+
+            const newMessage = prompt('Enter new message:', message);
+
+            if (newMessage !== null && newMessage.trim() !== '') {
+                messageDiv.textContent = newMessage.trim();
+                const timestampDiv = postDiv.querySelector('.timestamp');
+                timestampDiv.textContent = `Edited on: ${new Date().toLocaleString()}`;
             }
-        </script>
-    
-    </div>
-    
+        }
+
+        function deletePost(id) {
+            const postDiv = document.querySelector(`#posts .post:nth-child(${id})`);
+            postDiv.parentNode.removeChild(postDiv);
+        }
+    </script>
+</div>
+
     </section>
 
   </main><!-- End #main -->
