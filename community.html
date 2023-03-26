@@ -1,15 +1,22 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="utf-8">
   <meta content="width=device-width, initial-scale=1.0" name="viewport">
   <title>OKOA MAJI APP</title>
   <meta content="" name="description">
   <meta content="" name="keywords">
+
+  <!-- Favicons --> 
   <link href="assets/img/favicon.png" rel="icon">
   <link href="assets/img/apple-touch-icon.png" rel="apple-touch-icon">
+
+  <!-- Google Fonts Download -->
   <link href="https://fonts.gstatic.com" rel="preconnect">
   <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Nunito:300,300i,400,400i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i" rel="stylesheet">
+
+  <!-- CSS Files -->
   <link href="assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
   <link href="assets/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
   <link href="assets/vendor/boxicons/css/boxicons.min.css" rel="stylesheet">
@@ -17,23 +24,31 @@
   <link href="assets/vendor/quill/quill.bubble.css" rel="stylesheet">
   <link href="assets/vendor/remixicon/remixicon.css" rel="stylesheet">
   <link href="assets/vendor/simple-datatables/style.css" rel="stylesheet">
+
+  <!-- Main CSS File -->
   <link href="assets/css/style.css" rel="stylesheet">
 </head>
 
 <body>
 
+ 
   <!--  Header Section -->
   <header id="header" class="header fixed-top d-flex align-items-center">
+
     <div class="d-flex align-items-center justify-content-between">
       <i class="bi bi-list toggle-sidebar-btn"></i>
     </div>
+
     <nav class="header-nav ms-auto">
       <ul class="d-flex align-items-center">
+
           <li class="nav-item dropdown">
+
           <a class="nav-link nav-icon" href="#" data-bs-toggle="dropdown">
             <i class="bi bi-bell"></i>
             <span class="badge bg-primary badge-number">4</span>
-          </a>
+          </a><!-- End Notification Icon -->
+
           <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow notifications">
             <li class="dropdown-header">
               You have 3 new notifications
@@ -42,8 +57,9 @@
             <li>
               <hr class="dropdown-divider">
             </li>
+          
             <li class="notification-item">
-             <i class="bi bi-info-circle text-primary"></i>
+              <i class="bi bi-info-circle text-primary"></i>
               <div>
                 <h4>Water scarcity in your area</h4>
                 <p>We've detected a water shortage in your area. Please check the app for more information.</p>
@@ -148,7 +164,7 @@
 
         <li class="nav-item dropdown pe-3">
 
-          <a class="nav-link nav-profile d-flex align-items-center pe-0" href="#" data-bs-toggle="dropdown">
+          <a class="nav-link nav-profile d-flex align-items-center pe-0" href="profile.html" data-bs-toggle="dropdown">
             <i class="bi bi-person"></i>
             <span class="d-none d-md-block dropdown-toggle ps-2">BRIAN MASIGA</span>
           </a><!-- End Profile Iamge Icon -->
@@ -169,7 +185,7 @@
         </li><!-- End Profile Nav -->
 
       </ul>
-    </nav>
+    </nav><!-- End Icons Navigation -->
 
   </header><!-- End Header -->
 
@@ -214,94 +230,105 @@
 
     </ul>
 
+    
+
   </aside><!-- End Sidebar-->
 
   <main id="main" class="main">
 
     <div class="pagetitle">
-      <h1>Dashboard</h1>
       <nav>
         <ol class="breadcrumb">
-          <li class="breadcrumb-item"><a href="index.html">Home</a></li>
-          <li class="breadcrumb-item active">Dashboard</li>
+          <li class="breadcrumb-item"><a href="index.html">Home </a></li>
+          <li class="breadcrumb-item active"><a href="community.html">community</a></li>
         </ol>
       </nav>
     </div><!-- End Page Title -->
+    <div class="col-lg-12">
+
+        <form id="post-form">
+            <div class="row mb-3">
+                <label for="inputUsername" class="col-sm-2 col-form-label">Username</label>
+                <div class="col-sm-10">
+                    <input type="text" class="form-control" id="inputUsername" maxlength="10" required>
+                </div>
+            </div>
+            <div class="row mb-3">
+                <label for="inputTitle" class="col-sm-2 col-form-label">Title</label>
+                <div class="col-sm-10">
+                    <input type="text" class="form-control" id="inputTitle" maxlength="15" required>
+                </div>
+            </div>
+            <div class="row mb-3">
+                <label for="inputMessage" class="col-sm-2 col-form-label">Message </label>
+                <div class="col-sm-10">
+                    <textarea class="form-control" style="height: 100px" id="inputMessage" maxlength="250" required></textarea>
+                </div>
+            </div>
+        
+            <div class="row mb-3">
+                <div class="col-sm-10 text-center mx-auto">
+                    <button type="submit" class="btn btn-primary">POST TO COMMUNITY</button>
+                </div>
+            </div>
+        </form>
+        
+        <div id="posts"></div>
+        
+        <script>
+            const postForm = document.querySelector('#post-form');
+            const usernameInput = document.querySelector('#inputUsername');
+            const titleInput = document.querySelector('#inputTitle');
+            const messageInput = document.querySelector('#inputMessage');
+            const postsDiv = document.querySelector('#posts');
+            let postId = 1;
     
-        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
-        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
-        <div class="container">
-          <h1 class="my-4">Meter Reading Chart</h1>
-          <form id="reading-form" class="mb-4">
-              <div class="mb-3">
-                  <label for="curr-reading" class="form-label">Current Reading:</label>
-                  <input type="number" class="form-control" id="curr-reading" required>
-              </div>
-              <div class="mb-3">
-                  <label for="time-reading" class="form-label">Time of Reading:</label>
-                  <input type="datetime-local" class="form-control" id="time-reading" required>
-              </div>
-              <button type="submit" class="btn btn-primary">Submit</button>
-          </form>
-          <canvas id="reading-chart"></canvas>
-      </div>
-      <script>
-          let readingData = {
-              labels: [],
-              datasets: [
-                  {
-                      label: "Current Readings",
-                      data: [],
-                      borderColor: "rgba(75, 192, 192, 1)",
-                      backgroundColor: "rgba(75, 192, 192, 0.2)",
-                  },
-              ],
-          };
-  
-          let chartOptions = {
-              scales: {
-                  y: {
-                      beginAtZero: true,
-                  },
-              },
-          };
-  
-          let ctx = document.getElementById("reading-chart").getContext("2d");
-          let readingChart = new Chart(ctx, {
-              type: "bar", // Change the chart type to 'bar'
-              data: readingData,
-              options: chartOptions,
-          });
-  
-          $("#reading-form").on("submit", function (event) {
-              event.preventDefault();
-  
-              let currReading = parseFloat($("#curr-reading").val());
-              let timeReading = $("#time-reading").val();
-  
-              readingData.labels.push(timeReading);
-              readingData.datasets[0].data.push(currReading);
-  
-              readingChart.update();
-          });
-      </script>
-            </div><!-- End Reports -->
-
-            
-
-         
-          </div>
-        </div><!-- End Left side columns -->
-
-        <!-- Right side columns -->
-        <div class="col-lg-4">
-
-         
-        </div><!-- End Right side columns -->
-
-      </div>
+            postForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+    
+                // Create a new post object with the user's input and current timestamp
+                const post = {
+                    id: postId,
+                    username: usernameInput.value,
+                    title: titleInput.value,
+                    message: messageInput.value,
+                    rating: 0,
+                    timestamp: new Date()
+                };
+                postId++;
+    
+                // Add the post to the DOM
+                const postDiv = document.createElement('div');
+                postDiv.classList.add('post');
+                postDiv.innerHTML = `
+                    <hr>
+                    <p>Title: <b>${post.title}</b></p>
+                    <h6 class="timestamp">Posted on: ${post.timestamp.toLocaleString()}</h6>
+                    <h6 class="username">Author: ${post.username}</h6>
+                    <p class="message">${post.message}</p>
+                    <div class="rating">
+                        <button class="btn btn-secondary" onclick="ratePost(${post.id}, -1)">downvote </button>
+                        <span class="count">${post.rating}</span>
+                        <button class="btn btn-primary" onclick="ratePost(${post.id}, 1)"> upvote</button>
+                    </div>
+                    <hr>
+                `;
+                postsDiv.insertBefore(postDiv, postsDiv.firstChild);
+    
+                // Reset the form
+                postForm.reset();
+            });
+    
+            function ratePost(id, rating) {
+                const postDiv = document.querySelector(`#posts .post:nth-child(${id})`);
+                const countSpan = postDiv.querySelector('.count');
+                const currentRating = parseInt(countSpan.textContent);
+                countSpan.textContent = currentRating + rating;
+            }
+        </script>
+    
+    </div>
+    
     </section>
 
   </main><!-- End #main -->
