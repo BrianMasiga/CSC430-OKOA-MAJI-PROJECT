@@ -28,145 +28,12 @@
       <i class="bi bi-list toggle-sidebar-btn"></i>
     </div>
     <nav class="header-nav ms-auto">
-      <ul class="d-flex align-items-center">
-          <li class="nav-item dropdown">
-          <a class="nav-link nav-icon" href="#" data-bs-toggle="dropdown">
-            <i class="bi bi-bell"></i>
-            <span class="badge bg-primary badge-number">4</span>
-          </a>
-          <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow notifications">
-            <li class="dropdown-header">
-              You have 3 new notifications
-              <a href="#"><span class="badge rounded-pill bg-primary p-2 ms-2">View all</span></a>
-            </li>
-            <li>
-              <hr class="dropdown-divider">
-            </li>
-            <li class="notification-item">
-             <i class="bi bi-info-circle text-primary"></i>
-              <div>
-                <h4>Water scarcity in your area</h4>
-                <p>We've detected a water shortage in your area. Please check the app for more information.</p>
-                <p>1 hr. ago</p>
-              </div>
-            </li>
-          
-            <li>
-              <hr class="dropdown-divider">
-            </li>
-          
-            <li class="notification-item">
-              <i class="bi bi-exclamation-circle text-warning"></i>
-              <div>
-                <h4>Water quality alert</h4>
-                <p>Our water quality sensors have detected an issue with the water supply in your area. Please take precautions.</p>
-                <p>2 hrs. ago</p>
-              </div>
-            </li>
-          
-            <li>
-              <hr class="dropdown-divider">
-            </li>
-          
-            <li class="notification-item">
-              <i class="bi bi-check-circle text-success"></i>
-              <div>
-                <h4>Successful water donation</h4>
-                <p>Thanks to your donation, we were able to provide clean drinking water to a village in need.</p>
-                <p>4 hrs. ago</p>
-              </div>
-            </li>
-          
-            <li>
-              <hr class="dropdown-divider">
-            </li>
-          
-            <li class="dropdown-footer">
-              <a href="#">Show all notifications</a>
-            </li>
-          </ul>
-          <!-- End Notification Dropdown Items -->
-
-        </li>
-        <!-- End Notification Nav -->
-
-        <li class="nav-item dropdown">
-
-          <a class="nav-link nav-icon" href="#" data-bs-toggle="dropdown">
-            <i class="bi bi-chat-left-text"></i>
-            <span class="badge bg-success badge-number">3</span>
-          </a><!-- End Messages Icon -->
-          <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow messages">
-            <li class="dropdown-header">
-              You have 3 new notifications from the Okoa Maji system
-              <a href="#"><span class="badge rounded-pill bg-primary p-2 ms-2">View all</span></a>
-            </li>
-            <li>
-              <hr class="dropdown-divider">
-            </li>
-            <li class="message-item">
-              <a href="#">
-                <img src="assets/img/okoa-maji-1.jpg" alt="" class="rounded-circle">
-                <div>
-                  <h4>Water Quality Alert</h4>
-                  <p>The water quality in your area has been flagged as potentially unsafe. Please take necessary precautions.</p>
-                  <p>4 hrs. ago</p>
-                </div>
-              </a>
-            </li>
-            <li>
-              <hr class="dropdown-divider">
-            </li>
-            <li class="message-item">
-              <a href="#">
-                <img src="assets/img/okoa-maji-2.jpg" alt="" class="rounded-circle">
-                <div>
-                  <h4>Billing Reminder</h4>
-                  <p>Your monthly water bill is due in 3 days. Please ensure timely payment to avoid any disruptions in your water supply.</p>
-                  <p>6 hrs. ago</p>
-                </div>
-              </a>
-            </li>
-            <li>
-              <hr class="dropdown-divider">
-            </li>
-            <li class="message-item">
-              <a href="#">
-                <img src="assets/img/okoa-maji-3.jpg" alt="" class="rounded-circle">
-                <div>
-                  <h4>Water Conservation Tips</h4>
-                  <p>Here are some useful tips on how to conserve water and contribute towards a sustainable future.</p>
-                  <p>8 hrs. ago</p>
-                </div>
-              </a>
-            </li>
-            <li>
-              <hr class="dropdown-divider">
-            </li>
-          </ul><!-- End Messages Dropdown Items -->
-
-        </li><!-- End Messages Nav -->
+      <ul class="nav">
 
         <li class="nav-item dropdown pe-3">
 
-          <a class="nav-link nav-profile d-flex align-items-center pe-0" href="#" data-bs-toggle="dropdown">
-            <i class="bi bi-person"></i>
-            <span class="d-none d-md-block dropdown-toggle ps-2">BRIAN MASIGA</span>
-          </a><!-- End Profile Iamge Icon -->
+            <span class="card-title">#SDGSIX</span>
 
-          <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow profile">
-              <li>
-              <hr class="dropdown-divider">
-            </li>
-
-              <li>
-              <a class="dropdown-item d-flex align-items-center" href="pages-login.html">
-                <i class="bi bi-box-arrow-right"></i>
-                <span>Sign Out</span>
-              </a>
-            </li>
-
-          </ul><!-- End Profile Dropdown Items -->
         </li><!-- End Profile Nav -->
 
       </ul>
@@ -222,16 +89,7 @@
   </aside><!-- End Sidebar-->
   
 <!-- Test-->
-<style>
-    @media print {
-      #printable-area {
-        display: block;
-      }
-      #print-btn, #month-table {
-        display: none;
-      }
-    }
-  </style>
+
   <main id="main" class="main">
 
     <div class="pagetitle">
@@ -247,10 +105,107 @@
     <body>
          
         </div>
+        
     <!-- End Page Title -->
-    <body>
+  
+<body>
+    <style>
+        @media print {
+          body * {
+            visibility: hidden;
+          }
+          #report-table, #report-table * {
+            visibility: visible;
+          }
+          #report-table {
+            position: absolute;
+            left: 0;
+            top: 0;
+          }
+        }
+      </style>
+  <div class="container">
+    <h5 class="text-center">Real Time Water Usage Record</h5>
+    <form id="water-usage-form">
+      <div class="form-group">
+        <label for="last-read">Initial Read Value</label>
+        <input type="number" class="form-control" id="last-read" step="0.01" required>
+      </div>
+      <div class="form-group">
+        <label for="current-read">Current Read Value</label>
+        <input type="number" class="form-control" id="current-read" step="0.01" required>
+      </div>
+      <div class="form-group">
+        <label for="cost-per-liter">Cost per Liter</label>
+        <input type="number" class="form-control" id="cost-per-liter" step="0.01" required>
+      </div>
+      <div class="form-group">
+        <label for="date-time">Date and Time</label>
+        <inprm-control" id="date-time" required>
+      </div>
+      <br>
+      <button type="submit" class="btn btn-primary">Record</button>
+    </form>
+    <br>
+    <table class="table table-bordered table-striped">
+      <thead>
+        <tr>
+          <th scope="col">Date and Time</th>
+          <th scope="col">Last Read Value</th>
+          <th scope="col">Current Read Value</th>
+          <th scope="col">Usage</th>
+          <th scope="col">Cost</th>
+        </tr>
+      </thead>
+      <tbody id="report-table-body"></tbody>
+    </table>
+    <p>Total cost: Ksh <span id="total-cost">0.00</span></p>
+    <button id="print-button" class="btn btn-secondary">Print Records</button>
+  </div>
+  
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      const form = document.getElementById('water-usage-form');
+      const tableBody = document.getElementById('report-table-body');
+      const totalCost = document.getElementById('total-cost');
+      let totalSpent = 0;
+
+      form.addEventListener('submit', function (event) {
+        event.preventDefault();
+
+        const lastRead = parseFloat(form.elements['last-read'].value);
+        const currentRead = parseFloat(form.elements['current-read'].value);
+        const costPerLiter = parseFloat(form.elements['cost-per-liter'].value);
+        const dateTime = form.elements['date-time'].value;
+
+        const usage = currentRead - lastRead;
+        const cost = usage * costPerLiter;
+        totalSpent += cost;
+
+        const row = document.createElement('tr');
+        row.innerHTML = `
+          <td>${dateTime}</td>
+          <td>${lastRead.toFixed(2)}</td>
+          <td>${currentRead.toFixed(2)}</td>
+          <td>${usage.toFixed(2)}</td>
+          <td>${cost.toFixed(2)}</td>
+        `;
+        tableBody.appendChild(row);
+
+        totalCost.textContent = totalSpent.toFixed(2);
+      });
+
+      document.getElementById('print-button').addEventListener('click', function () {
+        window.print();
+      });
+    });
+  </script>
+</body>
+
         <div class="container">
-          <h5 class="text-center">Daily Data Input</h5>
+          <h5 class="text-center">Daily Trend</h5>
           <table class="table table-bordered table-striped" id="month-table">
             <thead>
               <tr>
