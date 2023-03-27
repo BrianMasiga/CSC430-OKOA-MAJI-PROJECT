@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+  <title>OKOA MAJI APP</title>
+  <meta content="" name="description">
+  <meta content="" name="keywords">
+  <link href="assets/img/favicon.png" rel="icon">
+  <link href="assets/img/apple-touch-icon.png" rel="apple-touch-icon">
+  <link href="https://fonts.gstatic.com" rel="preconnect">
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Nunito:300,300i,400,400i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i" rel="stylesheet">
+  <link href="assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+  <link href="assets/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
+  <link href="assets/vendor/boxicons/css/boxicons.min.css" rel="stylesheet">
+  <link href="assets/vendor/quill/quill.snow.css" rel="stylesheet">
+  <link href="assets/vendor/quill/quill.bubble.css" rel="stylesheet">
+  <link href="assets/vendor/remixicon/remixicon.css" rel="stylesheet">
+  <link href="assets/vendor/simple-datatables/style.css" rel="stylesheet">
+  <link href="assets/css/style.css" rel="stylesheet">
+</head>
+
+<body>
+
+  <!--  Header Section -->
+  <header id="header" class="header fixed-top d-flex align-items-center">
+    <div class="d-flex align-items-center justify-content-between">
+      <i class="bi bi-list toggle-sidebar-btn"></i>
+    </div>
+    <nav class="header-nav ms-auto">
+      <ul class="nav">
+
+        <li class="nav-item dropdown pe-3">
+
+            <span class="card-title">#SDGSIX</span>
+
+        </li><!-- End Profile Nav -->
+
+      </ul>
+    </nav>
+
+  </header><!-- End Header -->
+
+  <!-- ======= Sidebar ======= -->
+  <aside id="sidebar" class="sidebar">
+
+    <ul class="sidebar-nav" id="sidebar-nav">
+
+      <li class="nav-item">
+        <a class="nav-link " href="index.html">
+          <i class="bi bi-grid"></i>
+          <span>Dashboard</span>
+        </a>
+      </li><!-- End Dashboard Nav -->
+
+      <li class="nav-item">
+        <a class="nav-link collapsed" href="articles.html">
+          <i class="bi bi-list"></i>
+          <span>Articles</span>
+        </a>
+      </li><!-- End Forum Page Nav -->
+
+      <li class="nav-item">
+        <a class="nav-link collapsed" href="community.html">
+          <i class="bi bi-people"></i>
+          <span>Community</span>
+        </a>
+        <li class="nav-item">
+            <a class="nav-link collapsed" href="readings.html">
+              <i class="bi bi-bar-chart"></i>
+              <span>Readings</span>
+            </a>
+      <li class="nav-item">
+        <a class="nav-link collapsed" href="settings.html">
+          <i class="bi bi-check-circle"></i>
+          <span>Settings</span>
+        </a>
+      </li><!-- End Settings Page Nav -->
+
+      <li class="nav-item">
+        <a class="nav-link collapsed" href="login.html">
+          <i class="bi bi-box-arrow-in-right"></i>
+          <span>Logout</span>
+        </a>
+      </li><!-- End Login Page Nav -->
+
+    </ul>
+
+  </aside><!-- End Sidebar-->
+  
+<!-- Test-->
+
+  <main id="main" class="main">
+
+    <div class="pagetitle">
+      <h1>Dashboard</h1>
+      <nav>
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item"><a href="readings.html">Home</a></li>
+          <li class="breadcrumb-item active">Readings</li>
+        </ol>
+      </nav>
+    </div>
+    <!-- start Page Title -->
+    <body>
+         
+        </div>
+        
+    <!-- End Page Title -->
+  
+<body>
+    <style>
+        @media print {
+          body * {
+            visibility: hidden;
+          }
+          #report-table, #report-table * {
+            visibility: visible;
+          }
+          #report-table {
+            position: absolute;
+            left: 0;
+            top: 0;
+          }
+        }
+      </style>
+  <div class="container">
+    <h5 class="text-center">Real Time Water Usage Record</h5>
+    <form id="water-usage-form">
+      <div class="form-group">
+        <label for="last-read">Initial Read Value</label>
+        <input type="number" class="form-control" id="last-read" step="0.01" required>
+      </div>
+      <div class="form-group">
+        <label for="current-read">Current Read Value</label>
+        <input type="number" class="form-control" id="current-read" step="0.01" required>
+      </div>
+      <div class="form-group">
+        <label for="cost-per-liter">Cost per Liter</label>
+        <input type="number" class="form-control" id="cost-per-liter" step="0.01" required>
+      </div>
+      <div class="form-group">
+        <label for="date-time">Date and Time</label>
+        <inprm-control" id="date-time" required>
+      </div>
+      <br>
+      <button type="submit" class="btn btn-primary">Record</button>
+    </form>
+    <br>
+    <table class="table table-bordered table-striped">
+      <thead>
+        <tr>
+          <th scope="col">Date and Time</th>
+          <th scope="col">Last Read Value</th>
+          <th scope="col">Current Read Value</th>
+          <th scope="col">Usage</th>
+          <th scope="col">Cost</th>
+        </tr>
+      </thead>
+      <tbody id="report-table-body"></tbody>
+    </table>
+    <p>Total cost: Ksh <span id="total-cost">0.00</span></p>
+    <button id="print-button" class="btn btn-secondary">Print Records</button>
+  </div>
+  
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      const form = document.getElementById('water-usage-form');
+      const tableBody = document.getElementById('report-table-body');
+      const totalCost = document.getElementById('total-cost');
+      let totalSpent = 0;
+
+      form.addEventListener('submit', function (event) {
+        event.preventDefault();
+
+        const lastRead = parseFloat(form.elements['last-read'].value);
+        const currentRead = parseFloat(form.elements['current-read'].value);
+        const costPerLiter = parseFloat(form.elements['cost-per-liter'].value);
+        const dateTime = form.elements['date-time'].value;
+
+        const usage = currentRead - lastRead;
+        const cost = usage * costPerLiter;
+        totalSpent += cost;
+
+        const row = document.createElement('tr');
+        row.innerHTML = `
+          <td>${dateTime}</td>
+          <td>${lastRead.toFixed(2)}</td>
+          <td>${currentRead.toFixed(2)}</td>
+          <td>${usage.toFixed(2)}</td>
+          <td>${cost.toFixed(2)}</td>
+        `;
+        tableBody.appendChild(row);
+
+        totalCost.textContent = totalSpent.toFixed(2);
+      });
+
+      document.getElementById('print-button').addEventListener('click', function () {
+        window.print();
+      });
+    });
+  </script>
+</body>
+
+        <div class="container">
+          <h5 class="text-center">Daily Trend</h5>
+          <table class="table table-bordered table-striped" id="month-table">
+            <thead>
+              <tr>
+                <th scope="col">Sunday</th>
+                <th scope="col">Monday</th>
+                <th scope="col">Tuesday</th>
+                <th scope="col">Wednesday</th>
+                <th scope="col">Thursday</th>
+                <th scope="col">Friday</th>
+                <th scope="col">Saturday</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><input type="text" class="form-control" id="day1" value="10"></td>
+                <td><input type="text" class="form-control" id="day2" value="20"></td>
+                <td><input type="text" class="form-control" id="day3" value="30"></td>
+                <td><input type="text" class="form-control" id="day4" value="40"></td>
+                <td><input type="text" class="form-control" id="day5" value="50"></td>
+                <td><input type="text" class="form-control" id="day6" value="60"></td>
+                <td><input type="text" class="form-control" id="day7" value="70"></td>
+              </tr>
+            </tbody>
+          </table>
+
+          <button class="btn btn-primary" id="generate-chart">See My Daily Trend</button>
+          <canvas id="week-chart" style="display: none;"></canvas>
+        </div>
+      
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+        <script>
+          $(document).ready(function() {
+            $("#generate-chart").click(function() {
+              const data = [];
+              $("#month-table input").each(function() {
+                data.push(parseFloat($(this).val()));
+              });
+      
+              $("#week-chart").show();
+              const ctx = document.getElementById('week-chart').getContext('2d');
+              const labels = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+      
+              new Chart(ctx, {
+                type: 'line',
+                data: {
+                  labels: labels,
+                  datasets: [{
+                    label: 'Daily Data',
+                    data: data,
+                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    borderWidth: 2
+                  }]
+                },
+                options: {
+                  scales: {
+                    y: {
+                      beginAtZero: true
+                    }
+                  }
+                }
+              });
+           
+        });
+      });
+        </script>
+      </body>
+<hr>
+      <body>
+        <div class="container">
+          <h5 class="text-center">Am i using the right amount?</h5>
+          <label for="target">The average human being needs 50 liters of water per day for household needs.</label>
+          <input type="number" class="form-control" id="target" value="50">
+          <table class="table table-bordered table-striped mt-3">
+            <thead>
+              <tr>
+                <th scope="col">   </th>
+                <th scope="col">   </th>
+              </tr>
+            </thead>
+            <tbody id="input-table">
+              <!-- Add input fields for each day -->
+              <tr>
+                <th scope="row">Amount used in litres per day</th>
+                <td><input type="number" class="form-control" id="day1" value="60"></td>
+              </tr>
+              <!-- Add more rows here -->
+            </tbody>
+          </table>
+          <button class="btn btn-primary" id="generate-recommendations">check</button>
+          <div id="recommendations" style="display: none;">
+            <h5 class="text-center mt-3"></h5>
+            <ul id="recommendations-list"></ul>
+          </div>
+        </div>
+      
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+        <script>
+          $(document).ready(function() {
+            $("#generate-recommendations").click(function() {
+              const target = parseFloat($("#target").val());
+              const recommendations = [
+                "You are using more than your daily average of litres of water per day. You can adjust this by:",
+                "Turn off the tap while brushing your teeth.",
+                "Take shorter showers.",
+                "Turn off the tap while shaving.",
+                "Turn off the tap while washing your face.",
+                "Fix any leaks in your home.",
+                "Install a low-flow showerhead.",
+                "Collect rainwater for watering plants.",
+                "Use a broom instead of a hose to clean driveways and sidewalks.",
+                "Only run the dishwasher and washing machine with full loads.",
+                "Limit shower time.",
+                "Remember to head over to the Articles page for more tips on saving water !",
+              ];
+      
+              $("#recommendations-list").empty();
+              $("#input-table input").each(function() {
+                const dailyUsage = parseFloat($(this).val());
+                if (dailyUsage > target) {
+                  for (const rec of recommendations) {
+                    $("#recommendations-list").append('<p class="alert alert-danger">' + rec + '</p>');
+                  }
+                  return false; // Exit the loop after adding recommendations
+                }else{
+                  $("#recommendations-list").append('<p class="alert alert-info">' + "Congratulations you are within your usage target !" + '</p>');
+                }
+              });
+      
+              $("#recommendations").show();
+            });
+          });
+        </script>
+      </body>
+<hr>
+      <body>
+        <div class="container">
+          <h5 class="text-center">Average Household Water Usage Chart</h5>
+          <table class="table table-bordered table-striped">
+            <thead>
+              <tr>
+                <th scope="col">Activity</th>
+                <th scope="col">Water Usage (Liters) - Min</th>
+                <th scope="col">Water Usage (Liters) - Max</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Shower (10 minutes)</td>
+                <td>80</td>
+                <td>200</td>
+              </tr>
+              <tr>
+                <td>Bath</td>
+                <td>150</td>
+                <td>200</td>
+              </tr>
+              <tr>
+                <td>Hand washing (per minute)</td>
+                <td>4</td>
+                <td>8</td>
+              </tr>
+              <tr>
+                <td>Toilet flush (standard)</td>
+                <td>9</td>
+                <td>12</td>
+              </tr>
+              <tr>
+                <td>Toilet flush (low-flow)</td>
+                <td>4.5</td>
+                <td>6</td>
+              </tr>
+              <tr>
+                <td>Dishwasher (full cycle)</td>
+                <td>40</td>
+                <td>60</td>
+              </tr>
+              <tr>
+                <td>Washing machine (full load)</td>
+                <td>50</td>
+                <td>150</td>
+              </tr>
+              <tr>
+                <td>Brushing teeth (tap running)</td>
+                <td>6</td>
+                <td>12</td>
+              </tr>
+              <tr>
+                <td>Watering garden (hose, 30 minutes)</td>
+                <td>450</td>
+                <td>900</td>
+              </tr>
+              <tr>
+                <td>Drinking water (per person, daily)</td>
+                <td>2</td>
+                <td>3</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </body>
+      
+      
+    <div class="container mt-4 mb-4">
+      <div class="alert alert-info" role="alert">
+        This chart displays the meter readings over time, with the option to set a target limit. Fill in the current reading and time of reading, and click "Submit" to add the data point to the chart. The chart will update in real time.
+      </div>
+    </div>
+
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+            </div><!-- End Reports -->
+
+            
+
+         
+          </div>
+        </div><!-- End Left side columns -->
+
+        <!-- Right side columns -->
+        <div class="col-lg-4">
+
+         
+        </div><!-- End Right side columns -->
+
+      </div>
+    </section>
+
+  </main><!-- End #main -->
+
+  <!-- ======= Footer ======= -->
+  <footer id="footer" class="footer">
+    <div class="copyright">
+      &copy; Copyright <strong><span>okoamajiapp</span></strong>. All Rights Reserved
+    </div>
+  </footer>
+  <!-- End Footer -->
+
+  <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
+
+  <!-- JS Files -->
+  <script src="assets/vendor/apexcharts/apexcharts.min.js"></script>
+  <script src="assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+  <script src="assets/vendor/chart.js/chart.umd.js"></script>
+  <script src="assets/vendor/echarts/echarts.min.js"></script>
+  <script src="assets/vendor/quill/quill.min.js"></script>
+  <script src="assets/vendor/simple-datatables/simple-datatables.js"></script>
+  <script src="assets/vendor/tinymce/tinymce.min.js"></script>
+  <script src="assets/vendor/php-email-form/validate.js"></script>
+
+  <!-- Main JS File -->
+  <script src="assets/js/main.js"></script>
+
+</body>
+
+</html>
