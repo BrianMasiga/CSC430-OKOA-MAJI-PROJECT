@@ -51,7 +51,7 @@
               >
                 <div class="d-flex justify-content-center py-4">
                   <a
-                    href="index.html"
+                    href="index.php"
                     class="logo d-flex align-items-center w-auto"
                   >
                     <span class="d-none d-lg-block">#OKOAMAJI</span>
@@ -67,28 +67,28 @@
                     <form
                       class="row g-3 needs-validation"
                       novalidate
-                      action="add_user.php"
+                      action="registerdb.php"
                       method="post"
                     >
                       <div class="col-12">
-                        <label for="yourName" class="form-label">Name</label>
+                        <label for="yourName" class="form-label">First Name</label>
                         <input
                           type="text"
-                          name="name"
+                          name="first_name"
                           class="form-control"
                           id="yourName"
                           required
                         />
-                        <div class="invalid-feedback">Enter your name!</div>
+                        <div class="invalid-feedback">Enter your First name!</div>
                       </div>
 
                       <div class="col-12">
                         <label for="yourEmail" class="form-label"
-                          >username</label
+                          >Last Name</label
                         >
                         <input
-                          type="username"
-                          name="username"
+                          type="text"
+                          name="last_name"
                           class="form-control"
                           id="yourusername"
                           required
@@ -147,15 +147,16 @@
                         </div>
                       </div>
                       <div class="col-12">
-                        <button class="btn btn-primary w-100" type="submit">
+                        <button class="btn btn-primary w-100" type="submit" name="submit">
                           Create Account
                         </button>
+                    
                       </div>
 
                       <div class="col-12">
                         <p class="small mb-0">
                           Already have an account?
-                          <a href="login.html">Log in</a>
+                          <a href="login.php">Log in</a>
                         </p>
                       </div>
                     </form>
