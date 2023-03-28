@@ -50,7 +50,7 @@
               >
                 <div class="d-flex justify-content-center py-4">
                   <a
-                    href="index.html"
+                    href="index.php"
                     class="logo d-flex align-items-center w-auto"
                   >
                     <span class="d-none d-lg-block">#OKOAMAJI</span>
@@ -69,83 +69,86 @@
                       </p>
                     </div>
 
-                    <form class="row g-3 needs-validation" novalidate>
-                      <div class="col-12">
-                        <label for="yourUsername" class="form-label"
-                          >username</label
-                        >
-                        <div class="input-group has-validation">
-                          <input
-                            type="text"
-                            name="username"
-                            class="form-control"
-                            id="yourUsername"
-                            required
-                          />
-                          <div class="invalid-feedback">
-                            Please enter your username.
-                          </div>
-                        </div>
-                      </div>
-                      <div class="col-12">
-                        <label for="yourPassword" class="form-label"
-                          >Password</label
-                        >
-                        <input
-                          type="password"
-                          name="password"
-                          class="form-control"
-                          id="yourPassword"
-                          required
-                        />
-                        <div class="invalid-feedback">
-                          Please enter your password!
-                        </div>
-                      </div>
-                      <div class="col-12">
-                        <div class="form-check">
-                          <input
-                            class="form-check-input"
-                            type="checkbox"
-                            name="remember"
-                            value="true"
-                            id="rememberMe"
-                          />
-                          <label class="form-check-label" for="rememberMe"
-                            >Remember me</label
-                          >
-                        </div>
-                      </div>
+                    <form class="row g-3 needs-validation" novalidate method="POST" action="logindb.php">
+  <div class="col-12">
+    <label for="yourEmail" class="form-label">Email</label>
+    <input
+      type="email"
+      name="email"
+      class="form-control"
+      id="yourEmail"
+      required
+    />
+    <div class="invalid-feedback">
+      Please enter a valid Email address!
+    </div>
+  </div>
+  <div class="col-12">
+    <label for="yourPassword" class="form-label">Password</label>
+    <input
+      type="password"
+      name="password"
+      class="form-control"
+      id="yourPassword"
+      required
+    />
+    <div class="invalid-feedback">
+      Please enter your password!
+    </div>
+  </div>
+  <div class="col-12">
+    <div class="form-check">
+      <input
+        class="form-check-input"
+        type="checkbox"
+        name="remember"
+        value="true"
+        id="rememberMe"
+      />
+      <label class="form-check-label" for="rememberMe"
+        >Remember me</label
+      >
+    </div>
+  </div>
 
-                      <div class="col-12">
-                        <button
-                          class="btn btn-primary w-100"
-                          type="submit"
-                          onclick="login(event)"
-                        >
-                          Login
-                        </button>
-                      </div>
+  <div class="col-12">
+    <button
+      class="btn btn-primary w-100"
+      type="submit"
+      onclick="login(event)"
+    >
+      Login
+    </button>
+  </div>
 
-                      <div class="col-12">
-                        <p class="small mb-0">
-                          Don't have an account?
-                          <a href="register.html">Create an account</a>
-                        </p>
-                      </div>
-                    </form>
+  <div class="col-12">
+    <p class="small mb-0">
+      Don't have an account?
+      <a href="register.php">Create an account</a>
+    </p>
+  </div>
+  <!-- Add this div element to the HTML code -->
+<div id="error-message" class="alert alert-danger d-none" role="alert">
+  Wrong email or password.
+</div>
+
+</form>
+<script>
+  // Check if PHP variable is set and show error message
+  <?php if (isset($error_message)): ?>
+    document.getElementById("error-message").classList.remove("d-none");
+  <?php endif; ?>
+</script>
 
                     <script>
-                      function login(event) {
-                        event.preventDefault(); // prevent default form submission behavior
-                        // check if the form is valid
-                        if (document.querySelector("form").checkValidity()) {
-                          // perform login logic here
+                      
+function login(event) {
+  // prevent form submission if input fields are invalid
+  if (!document.querySelector("form").checkValidity()) {
+    event.preventDefault();
+  }
+}
 
-                          // redirect to index.html
-                          window.location.href = "index.html";
-                        }
-                      }
                     </script>
                   </div>
                 </div>
