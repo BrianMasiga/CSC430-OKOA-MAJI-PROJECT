@@ -20,6 +20,7 @@
   <link href="assets/css/style.css" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
+
   <!--  Begin Header -->
   <header id="header" class="header fixed-top d-flex align-items-center">
     <div class="d-flex align-items-center justify-content-between">
@@ -79,15 +80,15 @@
     <div class="row">
       <div class="col-md-6">
         <div class="card">
-          <div class="card-body">
-            <h1 class="card-title">ESTIMATED BILL</h1>
-            <p class="card-text">Estimated Cost: Ksh <span id="total-cost">0.00</span></p>
-            <div class="progress">
-              <div class="progress-bar" id="cost-progress" role="progressbar" style="width: 0%;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
-            </div>
-            <label for="target-cost">Target Cost (Ksh):</label>
-            <input type="number" class="form-control" id="target-cost" step="0.01" required>
-          </div>
+        <div class="card-body">
+  <h1 class="card-title">ESTIMATED BILL</h1>
+  <p class="card-text">Estimated Cost: Ksh</p>
+  <div class="progress">
+    <div class="progress-bar" id="cost-progress" role="progressbar" style="width: 0%;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+  </div>
+  <label for="target-cost">Target Cost (Ksh):</label>
+  <input type="number" class="form-control" id="target-cost" step="0.01" required>
+</div>
         </div>
       </div>
       <div class="col-md-6">
@@ -111,40 +112,182 @@
       The section below allows you to feed in the meter readings and records them in real time.
     </div>  
     <h5 class="alert alert-info text-center" role="alert"> RECORD YOUR READINGS IN REAL-TIME:<span class="blinking-dot"></span></h5>
-    <form id="water-usage-form">
-      <div class="form-group">
-        <label for="last-read">PREVIOUS READING:</label>
-        <input type="number" class="form-control" id="last-read" step="0.01" required>
-      </div>
-      <div class="form-group">
-        <label for="current-read">CURRENT READING:</label>
-        <input type="number" class="form-control" id="current-read" step="0.01" required>
-      </div>
-      <div class="form-group">
-        <label for="cost-per-liter">COST PER LITRE:</label>
-        <input type="number" class="form-control" id="cost-per-liter" step="0.01" required>
-      </div>
-      <br>
-      <button type="submit" class="btn btn-primary">RECORD</button>
-    </form>
+    <form id="water-usage-form" method="post">
+  <div class="form-group">
+    <label for="previous-reading">PREVIOUS READING:</label>
+    <input type="number" class="form-control" id="previous-reading" name="previous_reading" value="<?php echo $row['previous_reading'] ?>" required>
+  </div>
+  <div class="form-group">
+    <label for="current-reading">CURRENT READING:</label>
+    <input type="number" class="form-control" id="current-reading" name="current_reading" value="<?php echo $row['current_reading'] ?>" required>
+  </div>
+  <div class="form-group">
+    <label for="cost-per-liter">COST PER LITRE:</label>
+    <input type="number" class="form-control" id="cost-per-liter" name="cost_per_liter" value="<?php echo $row['cost_per_liter'] ?>" required>
+  </div>
+  <br>
+  <button type="submit" class="btn btn-success">UPDATE RECORD</button>
+
+</form>
+<br>
+
+<div id="clear-records-message"></div>
+
+<script>
+  $(document).ready(function() {
+  // Add click event listener to Clear Records button
+  $("#clear-records-button").click(function() {
+    // Send AJAX request to clear_records.php
+    $.ajax({
+      url: "clear_records.php",
+      type: "POST",
+      success: function(data) {
+        // Display response message
+        $("#clear-records-message").html(data);
+      }
+    });
+  });
+});
+
+  </script>
+<?php
+// Get the form data
+$previous_reading = $_POST['previous_reading'] ?? '';
+$current_reading = $_POST['current_reading'] ?? '';
+$cost_per_liter = $_POST['cost_per_liter'] ?? '';
+
+
+$servername = "localhost";
+$username = "admin";
+$password = "admin1234";
+$dbname = "okoamaji";
+
+$conn = new mysqli($servername, $username, $password, $dbname);
+
+// Check connection
+if ($conn->connect_error) {
+  die("Connection failed: " . $conn->connect_error);
+}
+
+// Insert the data into the table
+$sql = "INSERT INTO water_usage (previous_reading, current_reading, cost_per_liter) VALUES ('$previous_reading', '$current_reading', '$cost_per_liter')";
+
+if ($conn->query($sql) === TRUE) {
+  echo "";
+} else {
+  echo "Error: " . $sql . "<br>" . $conn->error;
+}
+
+// Check if the clear records button was clicked
+if (isset($_POST['clear_records'])) {
+  // Delete all records from the table
+  $sql = "DELETE FROM water_usage";
+  if ($conn->query($sql) === TRUE) {
+    echo "Records cleared successfully";
+  } else {
+    echo "Error: " . $sql . "<br>" . $conn->error;
+  }
+}
+// Close the database connection
+$conn->close();
+?>
+
     <br>
     <hr>
     <div class="alert alert-info text-center" role="alert">
       <b>REAL-TIME RECORDS</b>
     </div> 
-    <table class="table table-bordered table-striped"id="report-table">
-      <thead>
-        <tr>
-          <th scope="col">DATE & TIME OF RECORDING</th>
-          <th scope="col">INITIAL VALUE</th>
-          <th scope="col">CURRENT VALUE</th>
-          <th scope="col">AMOUNT USED</th>
-          <th scope="col">COST</th>
-        </tr>
-      </thead>
-      <tbody id="report-table-body"></tbody>
-    </table>
-    <button  id="print-button" class="btn btn-secondary">PRINT USAGE REPORT</button>
+    <table class="table table-bordered table-striped" id="report-table" name="report-table">
+  <thead>
+    <tr>
+      <th scope="col">DATE & TIME OF RECORDING</th>
+      <th scope="col">INITIAL VALUE</th>
+      <th scope="col">CURRENT VALUE</th>
+      <th scope="col">AMOUNT USED</th>
+      <th scope="col">COST</th>
+    </tr>
+  </thead>
+  <tbody id="report-table-body" class="scrollable-tbody">
+
+    <?php
+      // Connect to the database
+      $servername = "localhost";
+      $username = "admin";
+      $password = "admin1234";
+      $dbname = "okoamaji";
+
+      $conn = new mysqli($servername, $username, $password, $dbname);
+
+      // Check connection
+      if ($conn->connect_error) {
+        die("Connection failed: " . $conn->connect_error);
+      }
+
+      // Fetch the data from the database
+      $sql = "SELECT * FROM water_usage";
+      $result = $conn->query($sql);
+
+      // Initialize total variables
+      $totalUsed = 0;
+      $totalCost = 0;
+
+      // Output the data in the table
+      if ($result->num_rows > 0) {
+        while($row = $result->fetch_assoc()) {
+          $usage = $row["current_reading"] - $row["previous_reading"];
+          $cost = $usage * $row["cost_per_liter"];
+          echo "<tr>";
+          echo "<td>" . $row["created_at"] . "</td>";
+          echo "<td>" . $row["previous_reading"] . "</td>";
+          echo "<td>" . $row["current_reading"] . "</td>";
+          echo "<td>" . $usage . "</td>";
+          echo "<td>" . $cost . "</td>";
+          echo "</tr>";
+          // Add to total variables
+          $totalUsed += $usage;
+          $totalCost += $cost;
+        }
+        // Output total row
+        echo "<tr>";
+        echo "<td colspan='3'><strong>Total:</strong></td>";
+        echo "<td><strong>" . $totalUsed . "</strong> Litres</td>";
+        echo "<td><strong>" . $totalCost . "</strong> Ksh</td>";
+        echo "</tr>";
+      } else {
+        echo "<tr><td colspan='5'>No data found</td></tr>";
+      }
+
+      // Close the database connection
+      $conn->close();
+    ?>
+  </tbody id="report-table-body">
+</table>
+
+    <button id="print-button" class="btn btn-secondary">PRINT A REPORT</button>
+    <br>
+
+    <br>
+    <form id="clear-records-form" method="post" action="clear_records.php">
+  <button type="submit" class="btn btn-danger">CLEAR RECORDS</button>
+</form>
+    <script>
+      $(document).ready(function() {
+  // Add event listener to the clear records button
+  var clearRecordsButton = document.getElementById("clear-records-button");
+  clearRecordsButton.addEventListener("click", function() {
+    // Confirm that the user wants to clear the records
+    var confirmClear = confirm("Are you sure you want to clear all records?");
+    if (confirmClear) {
+      // Send an AJAX request to the server to delete all records
+      $.post("clear_records.php", function(data) {
+        // Reload the page to show the updated table
+        location.reload();
+      });
+    }
+  });
+});
+
+</script>
     <br>
     <hr> 
 </div>
@@ -154,67 +297,102 @@
       <body>  
           <div class="alert alert-dark text-center" role="alert">
             Average Household Water Usage Chart          </div> 
-          <table class="table table-bordered table-striped">
-            <thead>
-              <tr>
-                <th scope="col">Activity</th>
-                <th scope="col">Water Usage (Liters) - Min</th>
-                <th scope="col">Water Usage (Liters) - Max</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>Shower (10 minutes)</td>
-                <td>80</td>
-                <td>200</td>
-              </tr>
-              <tr>
-                <td>Bath</td>
-                <td>150</td>
-                <td>200</td>
-              </tr>
-              <tr>
-                <td>Hand washing (per minute)</td>
-                <td>4</td>
-                <td>8</td>
-              </tr>
-              <tr>
-                <td>Toilet flush (standard)</td>
-                <td>9</td>
-                <td>12</td>
-              </tr>
-              <tr>
-                <td>Toilet flush (low-flow)</td>
-                <td>4.5</td>
-                <td>6</td>
-              </tr>
-              <tr>
-                <td>Dishwasher (full cycle)</td>
-                <td>40</td>
-                <td>60</td>
-              </tr>
-              <tr>
-                <td>Washing machine (full load)</td>
-                <td>50</td>
-                <td>150</td>
-              </tr>
-              <tr>
-                <td>Brushing teeth (tap running)</td>
-                <td>6</td>
-                <td>12</td>
-              </tr>
-              <tr>
-                <td>Watering garden (hose, 30 minutes)</td>
-                <td>450</td>
-                <td>900</td>
-              </tr>
-              <tr>
-                <td>Drinking water (per person, daily)</td>
-                <td>2</td>
-                <td>3</td>
-              </tr>
-            </tbody>
-          </table>
+            <table class="table table-bordered table-striped">
+  <thead>
+    <tr>
+      <th scope="col">Activity</th>
+      <th scope="col">Number of times per day</th>
+      <th scope="col">Estimated amount of water used (gallons)</th>
+      <th scope="col">Total gallons of water used each day for this task</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Washing face/hands</td>
+      <td>1</td>
+      <td>2</td>
+      <td>2</td>
+    </tr>
+    <tr>
+      <td>Taking a shower (standard shower head)</td>
+      <td>1</td>
+      <td>50</td>
+      <td>50</td>
+    </tr>
+    <tr>
+      <td>Taking a shower (low flow shower head)</td>
+      <td>1</td>
+      <td>25</td>
+      <td>25</td>
+    </tr>
+    <tr>
+      <td>Taking a bath</td>
+      <td>1</td>
+      <td>36</td>
+      <td>36</td>
+    </tr>
+    <tr>
+      <td>Brushing teeth (water running)</td>
+      <td>2</td>
+      <td>4</td>
+      <td>8</td>
+    </tr>
+    <tr>
+      <td>Brushing teeth (water turned off)</td>
+      <td>2</td>
+      <td>0.25</td>
+      <td>0.5</td>
+    </tr>
+    <tr>
+      <td>Flushing the toilet</td>
+      <td>4</td>
+      <td>3</td>
+      <td>12</td>
+    </tr>
+    <tr>
+      <td>Shaving</td>
+      <td>1.5</td>
+      <td>2</td>
+      <td>3</td>
+    </tr>
+    <tr>
+      <td>Drinking a glass of water</td>
+      <td>2</td>
+      <td>0.25</td>
+      <td>0.5</td>
+    </tr>
+    <tr>
+      <td>Washing dishes by hand</td>
+      <td>2</td>
+      <td>4</td>
+      <td>8</td>
+    </tr>
+    <tr>
+      <td>Running a dishwasher</td>
+      <td>1</td>
+      <td>6</td>
+      <td>6</td>
+    </tr>
+    <tr>
+      <td>Doing a load of laundry</td>
+      <td>1</td>
+      <td>30</td>
+      <td>30</td>
+    </tr>
+    <tr>
+      <td>Watering lawn</td>
+      <td>1</td>
+      <td>300</td>
+      <td>300</td>
+    </tr>
+    <tr>
+      <td>Washing car</td>
+      <td>1</td>
+      <td>50</td>
+      <td>50</td>
+    </tr>
+  </tbody>
+</table>
         </div>
       </body>       
             </div>
@@ -246,11 +424,7 @@
       transition: background 0.5s ease;
       background: #8fd3f4;
     }
-    @media print {
-  #print-button {
-    display: none;
-  }
-}
+    
 
   </style>
     <!-- Add jQuery, Chart.js and Bootstrap JS for functionality -->
@@ -259,48 +433,6 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <script>
       
-document.getElementById('water-usage-form').addEventListener('submit', function (event) {
-  event.preventDefault();
-
-  const lastRead = parseFloat(document.getElementById('last-read').value);
-  const currentRead = parseFloat(document.getElementById('current-read').value);
-  const costPerLiter = parseFloat(document.getElementById('cost-per-liter').value);
-
-  if (currentRead < lastRead) {
-    alert('Current reading cannot be less than the previous reading.');
-    return;
-  }
-
-  const amountUsed = currentRead - lastRead;
-  const cost = amountUsed * costPerLiter;
-
-  const totalWater = parseFloat(document.getElementById('total-water').innerText);
-  const totalCost = parseFloat(document.getElementById('total-cost').innerText);
-
-  document.getElementById('total-water').innerText = (totalWater + amountUsed).toFixed(2);
-  document.getElementById('total-cost').innerText = (totalCost + cost).toFixed(2);
-
-  const newRow = document.createElement('tr');
-  newRow.innerHTML = `
-    <td>${new Date().toLocaleString()}</td>
-    <td>${lastRead.toFixed(2)}</td>
-    <td>${currentRead.toFixed(2)}</td>
-    <td>${amountUsed.toFixed(2)}</td>
-    <td>${cost.toFixed(2)}</td>
-  `;
-  document.getElementById('report-table-body').appendChild(newRow);
-
-  updateProgressBar('total-cost', 'target-cost', 'cost-progress');
-  updateProgressBar('total-water', 'target-use', 'water-progress');
-});
-
-function updateProgressBar(currentId, targetId, progressId) {
-  const current = parseFloat(document.getElementById(currentId).innerText);
-  const target = parseFloat(document.getElementById(targetId).value);
-
-  if (isNaN(target) || target <= 0) {
-    return;
-  }
 
   const percentage = Math.min((current / target) * 100, 100);
   const progressBar = document.getElementById(progressId);
@@ -318,7 +450,6 @@ function updateProgressBar(currentId, targetId, progressId) {
     progressBar.classList.add('bg-danger');
     progressBar.classList.remove('bg-success', 'bg-warning');
   }
-}
 
 document.getElementById('target-cost').addEventListener('input', function () {
   updateProgressBar('total-cost', 'target-cost', 'cost-progress');
@@ -327,26 +458,7 @@ document.getElementById('target-cost').addEventListener('input', function () {
 document.getElementById('target-use').addEventListener('input', function () {
   updateProgressBar('total-water', 'target-use', 'water-progress');
 });
-document.getElementById('print-button').addEventListener('click', function () {
-  const table = document.getElementById('report-table-body').parentElement;
 
-  // Add total cost and total usage rows to the end of the table
-  const totalWater = parseFloat(document.getElementById('total-water').innerText);
-  const totalCost = parseFloat(document.getElementById('total-cost').innerText);
-  const totalRow = document.createElement('tr');
-  totalRow.innerHTML = `
-    <td colspan="3"><b>Total Usage</b></td>
-    <td><b>${totalWater.toFixed(2)}</b></td>
-    <td><b>${totalCost.toFixed(2)}</b></td>
-  `;
-  table.appendChild(totalRow);
-
-  // Open print dialog
-  window.print();
-
-  // Remove total cost and total usage rows from the table
-  table.removeChild(totalRow);
-});
 </script>
 <!--All scripts End-->
   <!-- ======= Footer ======= -->
