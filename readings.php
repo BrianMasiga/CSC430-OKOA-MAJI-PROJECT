@@ -41,13 +41,13 @@
     <aside id="sidebar" class="sidebar">
     <ul class="sidebar-nav" id="sidebar-nav">
       <li class="nav-item">
-        <a class="nav-link " href="index.php">
+        <a class="nav-link collapsed " href="index.php">
           <i class="bi bi-grid"></i>
           <span>Home</span>
         </a>
       </li>
       <li class="nav-item">
-        <a class="nav-link collapsed" href="readings.php">
+        <a class="nav-link" href="readings.php">
           <i class="bi bi-bar-chart"></i>
           <span>Readings</span>
         </a>
@@ -76,37 +76,21 @@
   <main id="main" class="main">
   </div>
 <body>
-  <div class="container">
-    <div class="row">
-      <div class="col-md-6">
-        <div class="card">
-        <div class="card-body">
-  <h1 class="card-title">ESTIMATED BILL</h1>
-  <p class="card-text">Estimated Cost: Ksh</p>
-  <div class="progress">
-    <div class="progress-bar" id="cost-progress" role="progressbar" style="width: 0%;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
-  </div>
-  <label for="target-cost">Target Cost (Ksh):</label>
-  <input type="number" class="form-control" id="target-cost" step="0.01" required>
-</div>
-        </div>
-      </div>
-      <div class="col-md-6">
-        <div class="card">
-          <div class="card-body">
-            <h1 class="card-title">TOTAL AMOUNT OF WATER USED</h1>
-            <p class="card-text">Volume Used: <span id="total-water">0.00</span></p>
-            <div class="progress">
-              <div class="progress-bar" id="water-progress" role="progressbar" style="width: 0%;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
-            </div>
-            <label for="target-use">Target Water Usage (Litres):</label>
-            <input type="number" class="form-control" id="target-use" step="0.01" required>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
   
+<script>
+  // Select the <span> elements by their IDs
+const totalWaterSpan = document.getElementById("total-water");
+const estimatedCostSpan = document.getElementById("estimated-cost");
+
+// Retrieve the values of the hidden input fields
+const totalUsed = parseFloat(document.getElementById("total-used").value);
+const totalCost = parseFloat(document.getElementById("total-cost").value);
+
+// Update their text content with the variables
+totalWaterSpan.textContent = totalUsed.toFixed(2) + " Litres";
+estimatedCostSpan.textContent = totalCost.toFixed(2) + " Ksh";
+
+  </script>
   <div class="container mt-4 mb-4">
     <div class="alert alert-success text-center" role="alert">
       The section below allows you to feed in the meter readings and records them in real time.
@@ -115,15 +99,15 @@
     <form id="water-usage-form" method="post">
   <div class="form-group">
     <label for="previous-reading">PREVIOUS READING:</label>
-    <input type="number" class="form-control" id="previous-reading" name="previous_reading" value="<?php echo $row['previous_reading'] ?>" required>
+    <input type="number" class="form-control" id="previous-reading" name="previous_reading" value="<?php echo $row['previous_reading'] ?>" step="any" required>
   </div>
   <div class="form-group">
     <label for="current-reading">CURRENT READING:</label>
-    <input type="number" class="form-control" id="current-reading" name="current_reading" value="<?php echo $row['current_reading'] ?>" required>
+    <input type="number" class="form-control" id="current-reading" name="current_reading" value="<?php echo $row['current_reading'] ?>" step="any" required>
   </div>
   <div class="form-group">
-    <label for="cost-per-liter">COST PER LITRE:</label>
-    <input type="number" class="form-control" id="cost-per-liter" name="cost_per_liter" value="<?php echo $row['cost_per_liter'] ?>" required>
+    <label for="cost-per-liter">COST PER UNIT:</label>
+    <input type="number" class="form-control" id="cost-per-liter" name="cost_per_liter" value="<?php echo $row['cost_per_liter'] ?>"  step="any" required>
   </div>
   <br>
   <button type="submit" class="btn btn-success">UPDATE RECORD</button>
@@ -134,6 +118,7 @@
 <div id="clear-records-message"></div>
 
 <script>
+
   $(document).ready(function() {
   // Add click event listener to Clear Records button
   $("#clear-records-button").click(function() {
@@ -193,6 +178,7 @@ $conn->close();
 ?>
 
     <br>
+    
     <hr>
     <div class="alert alert-info text-center" role="alert">
       <b>REAL-TIME RECORDS</b>
@@ -256,21 +242,104 @@ $conn->close();
       } else {
         echo "<tr><td colspan='5'>No data found</td></tr>";
       }
-
+  
       // Close the database connection
       $conn->close();
     ?>
   </tbody id="report-table-body">
 </table>
+<br>
+<div class="row">
+  <div class="col-md-3"><button id="print-button" class="btn btn-secondary">PRINT REPORT</button>
+</div>
+  <div class="col-md-3"><form id="clear-records-form" method="post" action="clear_records.php">
+  <button type="submit" class="btn btn-danger">CLEAR RECORDS</button></div>
+</div>
 
-    <button id="print-button" class="btn btn-secondary">PRINT A REPORT</button>
-    <br>
-
-    <br>
-    <form id="clear-records-form" method="post" action="clear_records.php">
-  <button type="submit" class="btn btn-danger">CLEAR RECORDS</button>
 </form>
+  </div>
+</body>
+  
+  
+  <div class="container">
+  <hr>
+  <br>
+  <div class="row">
+    
+    <div class="col-md-6">
+      <div class="card">
+        <div class="card-body">
+          <br>
+          <div class="alert alert-info text-center" role="alert">
+            <b>AMOUNT OF WATER USED</b>
+          </div> 
+          <p class="card-text text-center"><span id="total-usage"><?php echo $totalUsed; ?></span> Litres</p>
+          <?php
+            $usagePercentage = ($totalUsed / 12000) * 100;
+            if ($usagePercentage <= 50) {
+              $progressBarColor = "bg-success";
+              echo "<p class='alert alert-success'> Wonderful! Lets keep saving, you are within range!</p>";
+            } else if ($usagePercentage <= 80) {
+              $progressBarColor = "bg-warning";
+              echo "<p class='alert alert-warning'>Slow Down. You are using more than the reccomended Amount</p>";
+            } else {
+              $progressBarColor = "bg-danger";
+              echo "<p class='alert alert-warning'> We are way over our target! Lets save more</p>";
+            }
+          ?>
+          <div class="progress">
+            <div class="progress-bar <?php echo $progressBarColor; ?>" id="cost-progress" role="progressbar" style="width: <?php echo $usagePercentage; ?>%;" aria-valuenow="<?php echo $totalUsed; ?>" aria-valuemin="0" aria-valuemax="12000"></div>
+          </div>
+          <br>
+          <p class="alert alert-info">Reccomended target: 9,000 Litres/ Month</p>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div class="card">
+        <div class="card-body">
+          <br>
+          <div class="alert alert-info text-center" role="alert">
+            <b>COST ACCRUED</b>
+          </div> 
+          <p class="card-text text-center"><span id="total-cost"><?php echo $totalCost; ?></span> Ksh</p>
+          <?php
+            $costPercentage = ($totalCost / 3000) * 100;
+            if ($costPercentage <= 50) {
+              $progressBarColor = "bg-success";
+              echo "<p class='alert alert-success'> Wonderful! Lets keep saving, you are within range!</p>";
+
+            } else if ($costPercentage <= 80) {
+              $progressBarColor = "bg-warning";
+              echo "<p class='alert alert-warning'>Slow Down. You are going to dent that wallet!</p>";
+
+            } else {
+              $progressBarColor = "bg-danger";
+              echo "<p class='alert alert-warning'> We are way over our target! Lets save more</p>";
+
+            }
+          ?>
+          <div class="progress">
+            <div class="progress-bar <?php echo $progressBarColor; ?>" id="water-progress" role="progressbar" style="width: <?php echo $costPercentage; ?>%;" aria-valuenow="<?php echo $totalCost; ?>" aria-valuemin="0" aria-valuemax="3000"></div>
+          </div>
+          <br>
+          <p class="alert alert-info">Reccomended target: 1,350 Ksh/ Month</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
     <script>
+
+
+const printButton = document.getElementById('print-button');
+const reportTable = document.getElementById('report-table');
+
+printButton.addEventListener('click', () => {
+  window.print();
+});
+
       $(document).ready(function() {
   // Add event listener to the clear records button
   var clearRecordsButton = document.getElementById("clear-records-button");
@@ -288,13 +357,16 @@ $conn->close();
 });
 
 </script>
-    <br>
-    <hr> 
+     
 </div>
 </body>
       </body>
     <div class="container">
-      <body>  
+    <hr>
+      <body> 
+ <?php
+ 
+ ?>
           <div class="alert alert-dark text-center" role="alert">
             Average Household Water Usage Chart          </div> 
             <table class="table table-bordered table-striped">
@@ -302,8 +374,8 @@ $conn->close();
     <tr>
       <th scope="col">Activity</th>
       <th scope="col">Number of times per day</th>
-      <th scope="col">Estimated amount of water used (gallons)</th>
-      <th scope="col">Total gallons of water used each day for this task</th>
+      <th scope="col">Estimated amount of water used (Litres)</th>
+      <th scope="col">Total Litres of water used each day for this task</th>
     </tr>
   </thead>
   <tbody>
@@ -422,9 +494,9 @@ $conn->close();
     }
     .card {
       transition: background 0.5s ease;
-      background: #8fd3f4;
+      background: #fff;
+      border-radius: 20px;
     }
-    
 
   </style>
     <!-- Add jQuery, Chart.js and Bootstrap JS for functionality -->
@@ -468,7 +540,6 @@ document.getElementById('target-use').addEventListener('input', function () {
     </div>
   </footer>
   <!-- End Footer -->
-  <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
   <!-- Main JS File -->
   <script src="assets/js/main.js"></script>
 </body>
