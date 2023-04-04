@@ -46,7 +46,7 @@
   <aside id="sidebar" class="sidebar">
     <ul class="sidebar-nav" id="sidebar-nav">
       <li class="nav-item">
-        <a class="nav-link " href="index.php">
+        <a class="nav-link collapsed " href="index.php">
           <i class="bi bi-grid"></i>
           <span>Home</span>
         </a>
@@ -58,7 +58,7 @@
         </a>
         </li>
       <li class="nav-item">
-        <a class="nav-link collapsed" href="articles.php">
+        <a class="nav-link" href="articles.php">
           <i class="bi bi-list"></i>
           <span>Articles</span>
         </a>
