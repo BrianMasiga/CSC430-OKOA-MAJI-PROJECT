@@ -645,16 +645,15 @@ $conn->close();
     options: options
   });
 </script>
+    <div class="alert alert-info text-center" role="alert"> PRINT REPORTS BELOW  <i class="fa fa-list-alt"></i></div>
 
-    <div class="alert alert-info text-center" role="alert"> PRINT REPORTS BELOW  <i class="fa fa-print"></i></div>
-
-    <span><button type="submit" class="btn btn-warning w-100" id="printChart">PRINT USAGE TREND <i class="fa fa-print"></i></button></span>
+    <span><button type="submit" class="btn btn-warning w-100" id="printChart">PRINT USAGE TREND</button></span>
     <br>
     <br>
-    <span><button type="submit" class="btn btn-secondary w-100" id="generateReport"> PRINT USAGE SUMMARY  <i class="fa fa-list"></i></button></span>
+    <span><button type="submit" class="btn btn-secondary w-100" id="generateReport"> PRINT USAGE SUMMARY</button></span>
     <br>
     <br>
-    <span><button type="submit" class="btn btn-dark w-100" id="forecast">  PRINT CURRENT BILL  <i class="fa fa-dollar"></i></button></span>
+    <span><button type="submit" class="btn btn-dark w-100" id="forecast">  PRINT CURRENT BILL</button></span>
     <br>
     <br>
     <script src="charts.js"></script>
@@ -908,7 +907,7 @@ $conn->close();
     <header>
     <h1>OKOA MAJI PLATFORM</h1>
     <br>
-        <h3>WATER BILL REPORT</h3>
+        <h3>WATER USAGE REPORT</h3>
        
     </header>
     <main>
@@ -940,13 +939,12 @@ if ($result->num_rows > 0) {
 
 $conn->close();
 ?>
-        <h3>Bill Summary</h3>
+        <h3>USAGE SUMMARY</h3>
         <table class="table table-bordered">
   <thead>
     <tr>
       <th>Time and Date</th>
       <th>Usage</th>
-      <th>Rate per unit</th>
       <th>Amount</th>
     </tr>
   </thead>
@@ -981,7 +979,6 @@ $conn->close();
         echo "<tr>";
         echo "<td>" . $row['created_at'] . "</td>";
         echo "<td>" . $row['usage'] . " litres"."</td>";
-        echo "<td> 100 ksh</td>";
         echo "<td>KES " . number_format($amount, 2) . "</td>";
         echo "</tr>";
       }
@@ -993,11 +990,13 @@ $conn->close();
   </tbody>
   <tfoot>
     <tr>
-      <td colspan="3" class="text-right"><strong>Total Amount Due:</strong></td>
+      <td colspan="2" class="text-right"><strong>Total Amount Due:</strong></td>
       <td>KES <?php echo number_format($total, 2); ?></td>
     </tr>
   </tfoot>
 </table>
+
+
 
 
 <h3>Total Amount Due</h3>
