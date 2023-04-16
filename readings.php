@@ -467,20 +467,88 @@ if ($result->num_rows > 0) {
 $conn->close();
 ?>
 
-<script>
-    var waterUsageData = <?php echo json_encode($data); ?>;
-</script>
-<div class="card"><br>
-<div class="alert text-center" role="alert"><p><b>WATER USAGE TREND CHART <i class="fas fa-chart-line"></i></p></div>
-  <div class="row-md-12">
-        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-        
+<!-- First, include the Chart.js library in your HTML -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
+<!-- Next, add the canvas element to your HTML -->
+<div class="card">
+  <div class="card-title text-center">
+    USAGE TREND <span class="fa fa-chart"></span>
+  </div>
+  <div class="card-body">
     <canvas id="waterUsageChart" width="800" height="400"></canvas>
     <br>
-    <br>
-    </div>
-    </div>
+  </div>
+</div>
+
+<!-- Finally, add the following PHP and JavaScript code to retrieve the data and create the chart -->
+<?php
+// Connect to the database
+$servername = "localhost";
+$username = "admin";
+$password = "admin1234";
+$dbname = "okoamaji";
+
+$conn = new mysqli($servername, $username, $password, $dbname);
+
+// Check connection
+if ($conn->connect_error) {
+  die("Connection failed: " . $conn->connect_error);
+}
+
+// Query the database to get the water usage data
+$sql = "SELECT * FROM water_usage";
+$result = $conn->query($sql);
+
+// Initialize the arrays for the chart data
+$labels = array();
+$data = array();
+
+// Fetch the data and add it to the arrays
+if ($result->num_rows > 0) {
+  while ($row = $result->fetch_assoc()) {
+    $labels[] = $row['created_at']; // Change 'date' to the name of the column that contains the date data
+    $data[] = $row['usage']; // Change 'usage' to the name of the column that contains the usage data
+  }
+}
+
+// Close the database connection
+$conn->close();
+?>
+
+<script>
+  // Get the canvas element and create the chart context
+  var ctx = document.getElementById('waterUsageChart').getContext('2d');
+
+  // Define the chart data and options
+  var data = {
+    labels: <?php echo json_encode($labels); ?>,
+    datasets: [{
+      label: 'Water Usage',
+      data: <?php echo json_encode($data); ?>,
+      backgroundColor: 'rgba(54, 162, 235, 0.5)',
+      borderColor: 'rgba(54, 162, 235, 1)',
+      borderWidth: 1
+    }]
+  };
+  var options = {
+    scales: {
+      yAxes: [{
+        ticks: {
+          beginAtZero: true
+        }
+      }]
+    }
+  };
+
+  // Create the chart
+  var waterUsageChart = new Chart(ctx, {
+    type: 'line',
+    data: data,
+    options: options
+  });
+</script>
+
     <br>
     <div class="alert alert-info text-center" role="alert"><i class="fa fa-print"></i> PRINT REPORTS BELOW</div>
 
