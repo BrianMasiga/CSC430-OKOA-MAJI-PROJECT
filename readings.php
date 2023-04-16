@@ -46,13 +46,13 @@
   <aside id="sidebar" class="sidebar">
     <ul class="sidebar-nav" id="sidebar-nav">
       <li class="nav-item">
-        <a class="nav-link " href="index.php">
+        <a class="nav-link collapsed" href="index.php">
           <i class="bi bi-grid"></i>
           <span>Home</span>
         </a>
       </li>
       <li class="nav-item">
-        <a class="nav-link collapsed" href="readings.php">
+        <a class="nav-link" href="readings.php">
           <i class="bi bi-bar-chart"></i>
           <span>Readings</span>
         </a>
@@ -86,7 +86,9 @@
   <main id="main" class="main">
   </div>
 <body>
-  
+  <?php
+  error_reporting(E_ERROR); // Only report errors, hide warnings and notices
+  ?>
 <script>
   // Select the <span> elements by their IDs
 const totalWaterSpan = document.getElementById("total-water");
@@ -106,92 +108,6 @@ estimatedCostSpan.textContent = totalCost.toFixed(2) + " Ksh";
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
 </head>
-<body>
-    <div class="container">
-        <button class="btn btn-primary mt-3 w-100" data-bs-toggle="modal" data-bs-target="#timerModal">Click to Set a reminder</button>
-        <p class="mt-3">Time remaining until next record: <span id="timeRemaining">you have not set a time interval!</span></p>
-    </div>
-
-    <div class="modal fade" id="timerModal" tabindex="-1" aria-labelledby="timerModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="timerModalLabel">This timer reminds you to record your usage data after a set period</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <label for="timerInput">Enter the interval in minutes:</label>
-                    <input type="number" class="form-control" id="timerInput" min="1">
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-primary" id="saveBtn">Save</button>
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <script>
-        const timerInput = document.getElementById("timerInput");
-        const saveBtn = document.getElementById("saveBtn");
-        const timeRemaining = document.getElementById("timeRemaining");
-        let countdown;
-        let timerAlert;
-
-        function updateRemainingTime(seconds) {
-            const minutes = Math.floor(seconds / 60);
-            const remainingSeconds = seconds % 60;
-            timeRemaining.textContent = `${minutes}m ${remainingSeconds}s`;
-        }
-
-        saveBtn.addEventListener("click", () => {
-            const minutes = parseInt(timerInput.value);
-            if (minutes > 0) {
-                if (countdown) {
-                    clearInterval(countdown);
-                }
-                if (timerAlert) {
-                    clearTimeout(timerAlert);
-                }
-                const endTime = Date.now() + minutes * 60 * 1000;
-                let remainingSeconds = minutes * 60;
-
-                updateRemainingTime(remainingSeconds);
-
-                countdown = setInterval(() => {
-                    remainingSeconds--;
-                    updateRemainingTime(remainingSeconds);
-
-                    if (remainingSeconds <= 0) {
-                        clearInterval(countdown);
-                        timeRemaining.textContent = "Time's up! set a new interval";
-                        showAlert();
-                    }
-                }, 1000);
-
-                timerAlert = setTimeout(() => {
-                    clearInterval(countdown);
-                }, minutes * 60 * 1000);
-
-                const timerModal = bootstrap.Modal.getInstance(document.getElementById('timerModal'));
-                timerModal.hide();
-            }
-        });
-
-        function showAlert() {
-            const alertContainer = document.createElement('div');
-            alertContainer.innerHTML = `
-                <div class="alert alert-dismissible alert-danger fixed-top m-3" role="alert">
-                   Hello there! It's time to record your usage data. Constant recording will help you keep track of your usage and help you save more.
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                </div>
-            `;
-
-            document.body.appendChild(alertContainer);
-        }
-    </script>
-</body>
-
 
   <div class="container mt-4 mb-4">
   
@@ -206,7 +122,7 @@ estimatedCostSpan.textContent = totalCost.toFixed(2) + " Ksh";
   </div>
   <div class="form-group">
     <label for="current-reading">CURRENT READING:</label>
-    <input type="number" class="form-control" id="current-reading" name="current_reading" value="<?php echo $row['current_reading'] ?>" step="any" required>
+    <input type="number" class="form-control" id="current-reading" name="current_reading" value="<?php echo @$row['current_reading'] ?>" step="any" required>
   </div>
   <div class="form-group">
     <label for="cost-per-liter">COST IN KSH:</label>
@@ -218,30 +134,44 @@ estimatedCostSpan.textContent = totalCost.toFixed(2) + " Ksh";
 </form>
 <?php
 // Get the form data
-$previous_reading = $_POST['previous_reading'] ?? '';
-$current_reading = $_POST['current_reading'] ?? '';
-$cost_per_liter = $_POST['cost_per_liter'] ?? '';
+if (!empty($_POST)) {
+  $previous_reading = $_POST['previous_reading'] ?? '';
+  $current_reading = $_POST['current_reading'] ?? '';
+  $cost_per_liter = $_POST['cost_per_liter'] ?? '';
 
+  $servername = "localhost";
+  $username = "admin";
+  $password = "admin1234";
+  $dbname = "okoamaji";
 
-$servername = "localhost";
-$username = "admin";
-$password = "admin1234";
-$dbname = "okoamaji";
+  $conn = new mysqli($servername, $username, $password, $dbname);
 
-$conn = new mysqli($servername, $username, $password, $dbname);
+  // Check connection
+  if ($conn->connect_error) {
+    die("Connection failed: " . $conn->connect_error);
+  }
 
-// Check connection
-if ($conn->connect_error) {
-  die("Connection failed: " . $conn->connect_error);
+  // Check if the current input is the same as the previous input
+  $row = array();
+$sql = "SELECT current_reading, previous_reading, cost_per_liter FROM water_usage ORDER BY id DESC LIMIT 1";
+$result = $conn->query($sql);
+
+if ($result && $result->num_rows > 0) {
+  $row = $result->fetch_assoc();
 }
 
-// Insert the data into the table
-$sql = "INSERT INTO water_usage (previous_reading, current_reading, cost_per_liter) VALUES ('$previous_reading', '$current_reading', '$cost_per_liter')";
+  if ($row['current_reading'] != $current_reading) {
+    // Insert the data into the table
+    $sql = "INSERT INTO water_usage (previous_reading, current_reading, cost_per_liter) 
+            VALUES ('$previous_reading', '$current_reading', '$cost_per_liter')";
 
-if ($conn->query($sql) === TRUE) {
-  echo "";
-} else {
-  echo "Error: " . $sql . "<br>" . $conn->error;
+    if ($conn->query($sql) === TRUE) {
+      echo "";
+    } else {
+      echo "Error: " . $sql . "<br>" . $conn->error;
+    }
+  }
+
 }
 
 // Check if the clear records button was clicked
@@ -254,8 +184,7 @@ if (isset($_POST['clear_records'])) {
     echo "Error: " . $sql . "<br>" . $conn->error;
   }
 }
-// Close the database connection
-$conn->close();
+
 ?>
 
     <br>
@@ -321,7 +250,7 @@ $conn->close();
         echo "<td><strong>" . $totalCost . "</strong> Ksh</td>";
         echo "</tr>";
       } else {
-        echo "<tr><td colspan='5'>No data found</td></tr>";
+        echo "<tr><td colspan='5'>No Usage Data Has Been Recorded!</td></tr>";
       }
   
       // Close the database connection
@@ -332,7 +261,9 @@ $conn->close();
 <br>
   <div class="col-md-12"><form id="clear-records-form" method="post" action="clear_records.php">
   <button type="submit" class="btn btn-danger w-100">CLEAR RECORDS</button></div>
-
+  <br>
+    <span><button type="submit" class="btn btn-secondary w-100" id="generateReport"> PRINT USAGE SUMMARY</button></span>
+    <br>
 </div>
 </form>
   </div>
@@ -440,7 +371,6 @@ printButton.addEventListener('click', () => {
 </body>
       </body>
     <div class="container">
-    <hr>
     <?php
 $servername = "localhost";
 $username = "admin";
@@ -467,36 +397,183 @@ if ($result->num_rows > 0) {
 $conn->close();
 ?>
 
-<script>
-    var waterUsageData = <?php echo json_encode($data); ?>;
-</script>
-<div class="card"><br>
-<div class="alert text-center" role="alert"><p><b>WATER USAGE TREND CHART <i class="fas fa-chart-line"></i></p></div>
-  <div class="row-md-12">
-        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-        
+<!-- First, include the Chart.js library in your HTML -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-    <canvas id="waterUsageChart" width="800" height="400"></canvas>
-    <br>
-    <br>
+<!-- Next, add the canvas element to your HTML -->
+
+    <div class="col-md-12">
+      <div class="card">
+        <div class="card-title text-center">
+          WATER USAGE TREND <span class="fa fa-chart"></span>
+        </div>
+        <div class="card-body">
+          <canvas id="waterUsageChart" width="900" height="400"></canvas>
+     </div>
+      </div>
     </div>
-    </div>
-    <br>
-    <div class="alert alert-info text-center" role="alert"><i class="fa fa-print"></i> PRINT REPORTS BELOW</div>
-
-    <span><button type="submit" class="btn btn-dark w-100" id="printChart">PRINT USAGE TREND</button></span>
-    <br>
-    <br>
-    <span><button type="submit" class="btn btn-success w-100" id="generateReport">  PRINT USAGE SUMMARY</button></span>
-    <br>
-    <br>
-    <span><button type="submit" class="btn btn-danger w-100" id="forecast">  PRINT CURRENT BILL</button></span>
-    <br>
-    <br>
-    <script src="charts.js"></script>
-
+    <span><button type="submit" class="btn btn-success w-100" id="printChart">PRINT USAGE TREND</button></span>
 <br>
+<br>
+<br>
+    <div class="col-md-12">
+      <div class="card">
+        <div class="card-title text-center">
+          COST ACCRUED TREND<span class="fa fa-chart"></span>
+        </div>
+        <div class="card-body">
+          <canvas id="costChart" width="900" height="400"></canvas>
+        </div>
+      </div>
+      <span><button type="submit" class="btn btn-danger w-100" id="forecast">  PRINT USAGE BILL</button></span>
+    </div>
 
+
+
+<!-- Finally, add the following PHP and JavaScript code to retrieve the data and create the chart -->
+<?php
+// Connect to the database
+$servername = "localhost";
+$username = "admin";
+$password = "admin1234";
+$dbname = "okoamaji";
+
+$conn = new mysqli($servername, $username, $password, $dbname);
+
+// Check connection
+if ($conn->connect_error) {
+  die("Connection failed: " . $conn->connect_error);
+}
+
+// Query the database to get the water usage data
+$sql = "SELECT * FROM water_usage";
+$result = $conn->query($sql);
+
+// Initialize the arrays for the chart data
+$labels = array();
+$data = array();
+
+// Fetch the data and add it to the arrays
+if ($result->num_rows > 0) {
+  while ($row = $result->fetch_assoc()) {
+    $labels[] = $row['created_at']; // Change 'date' to the name of the column that contains the date data
+    $data[] = $row['usage']; // Change 'usage' to the name of the column that contains the usage data
+  }
+}
+
+// Close the database connection
+$conn->close();
+?>
+
+<script>
+  // Get the canvas element and create the chart context
+  var ctx = document.getElementById('waterUsageChart').getContext('2d');
+
+  // Define the chart data and options
+  var data = {
+    labels: <?php echo json_encode($labels); ?>,
+    datasets: [{
+      label: 'Water Usage',
+      data: <?php echo json_encode($data); ?>,
+      backgroundColor: 'green',
+      borderWidth: 1
+    }]
+  };
+  var options = {
+    scales: {
+      xAxes: [{
+        display: false, // add this line to hide the x-axis
+      }],
+      yAxes: [{
+        ticks: {
+          beginAtZero: true
+        }
+      }]
+    }
+  };
+
+
+  // Create the chart
+  var waterUsageChart = new Chart(ctx, {
+    type: 'line',
+    data: data,
+    options: options
+  });
+</script>
+
+    <br>
+    <!-- First, include the Chart.js library in your HTML -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<!-- Next, add the canvas element to your HTML -->
+
+
+<!-- Finally, add the following PHP and JavaScript code to retrieve the data and create the chart -->
+<?php
+// Connect to the database
+$servername = "localhost";
+$username = "admin";
+$password = "admin1234";
+$dbname = "okoamaji";
+
+$conn = new mysqli($servername, $username, $password, $dbname);
+
+// Check connection
+if ($conn->connect_error) {
+  die("Connection failed: " . $conn->connect_error);
+}
+
+// Query the database to get the cost and created_at data
+$sql = "SELECT cost, created_at FROM water_usage";
+$result = $conn->query($sql);
+
+// Initialize the arrays for the chart data
+$labels = array();
+$data = array();
+
+// Fetch the data and add it to the arrays
+if ($result->num_rows > 0) {
+  while ($row = $result->fetch_assoc()) {
+    $labels[] = $row['created_at'];
+    $data[] = $row['cost'];
+  }
+}
+
+// Close the database connection
+$conn->close();
+?>
+
+<script>
+  // Get the canvas element and create the chart context
+  var ctx = document.getElementById('costChart').getContext('2d');
+
+  // Define the chart data and options
+  var data = {
+    labels: <?php echo json_encode($labels); ?>,
+    datasets: [{
+      label: 'Cost',
+      data: <?php echo json_encode($data); ?>,
+      backgroundColor: 'red',
+      borderWidth: 1
+    }]
+  };
+  var options = {
+    scales: {
+      yAxes: [{
+        ticks: {
+          beginAtZero: true
+        }
+      }]
+    }
+  };
+
+  // Create the chart
+  var costChart = new Chart(ctx, {
+    type: 'bar',
+    data: data,
+    options: options
+  });
+</script>
 <script>
   
   document.getElementById('printChart').addEventListener('click', printWaterUsageChart);
@@ -504,52 +581,93 @@ $conn->close();
   function printWaterUsageChart() {
   var printWindow = window.open('', '_blank');
   printWindow.document.write(`
-    <html>
-    <link href="assets/img/favicon.png" rel="icon">
-        <head>
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-            <title>Print Usage Trend</title>
-            <style>
-                body { font-family: Arial, sans-serif; margin: 0; }
-                header { background-color: #3f51b5; color: white; padding: 15px 0; text-align: center; }
-                h1 { font-size: 24px; margin-bottom: 0; }
-                footer { background-color: #3f51b5; color: white; padding: 40px 0; text-align: center; }
-                p { font-size: 18px; margin-top: 0; text-align: center; }
-                h3 { font-size: 20px; margin-bottom: 10px; }
-                ol { font-size: 16px; }
-                img { display: block; margin: 20px auto; width: 75%; }
-                button { display: block; margin: 20px auto; font-size: 18px; }
-                main { padding: 20px; }
-            </style>
-        </head>
-        <body>
-            <header>
-                <h1>USAGE TREND - OKOA MAJI APP</h1><button onclick="window.print();" class="btn"><i class="fas fa-print"></i></button>
-            </header>
-            <main>
-                <p>This chart represents the amount of water used (in litres) at different times and dates and helps you keep track of your usage trends.</p>
-              
-                <hr>
-                
-                <img src="${waterUsageChart.toBase64Image()}" alt="Water Usage Chart"/>
-                <br>
-                <hr>
-                
-                <h3>Recommendations on How to Save Water:</h3>
-                <ol>
-                  <li>Turn off the tap while brushing your teeth or washing your face.</li>
-                  <li>Fix any leaks in your home promptly.</li>
-                  <li>Install water-saving showerheads and faucet aerators.</li>
-                  <li>Only run the dishwasher and washing machine with full loads.</li>
-                  <li>Collect rainwater for watering plants.</li>
-                  <li>Water your garden during the early morning or late evening to reduce evaporation.</li>
-                </ol>
-            </main>
-            <footer>
-                <p>&copy; Water Usage Report - Generated on ${new Date().toLocaleString()}</p>
-            </footer>
-        </body>
-    </html>
+  <!DOCTYPE html>
+<html>
+<head>
+  <title>Water Usage Report</title>
+</head>
+<body>
+  <h1>Water Usage Report</h1>
+
+  <?php
+      // Connect to the database
+      $servername = "localhost";
+      $username = "admin";
+      $password = "admin1234";
+      $dbname = "okoamaji";
+      $conn = new mysqli($servername, $username, $password, $dbname);
+      
+      // Check connection
+      if ($conn->connect_error) {
+        die("Connection failed: " . $conn->connect_error);
+      }
+      
+      // Query the database to get the water usage data
+      $sql = "SELECT * FROM water_usage";
+      $result = $conn->query($sql);
+      
+      // Initialize the variables for the highest and lowest usage and cost
+      $highest_usage = 0;
+      $highest_cost = 0;
+      $lowest_usage = PHP_INT_MAX;
+      $lowest_cost = PHP_INT_MAX;
+      
+      // Fetch the data and display it in the table
+      if ($result->num_rows > 0) {
+        echo "<h3>Water Usage Report</h3>";
+        echo "<table>";
+        echo "<tr><th>Time and Date</th><th>Usage (litres)</th><th>Cost (KES)</th></tr>";
+        while ($row = $result->fetch_assoc()) {
+          // Update the highest and lowest usage and cost variables
+          if ($row['usage'] > $highest_usage) {
+            $highest_usage = $row['usage'];
+          }
+          if ($row['usage'] < $lowest_usage) {
+            $lowest_usage = $row['usage'];
+          }
+          if ($row['cost'] > $highest_cost) {
+            $highest_cost = $row['cost'];
+          }
+          if ($row['cost'] < $lowest_cost) {
+            $lowest_cost = $row['cost'];
+          }
+      
+          echo "<tr>";
+          echo "<td>" . $row['recorded_at'] . "</td>";
+          echo "<td>" . $row['usage'] . "</td>";
+          echo "<td>" . $row['cost'] . "</td>";
+          echo "</tr>";
+        }
+        echo "</table>";
+      } else {
+        echo "<p>No water usage data found.</p>";
+      }
+      
+      // Close the database connection
+      $conn->close();
+      
+      // Display the highest and lowest usage and cost
+      echo "<h3>Highest and Lowest Usage and Cost</h3>";
+      echo "<p>Highest recorded usage: " . $highest_usage . " litres</p>";
+      echo "<p>Lowest recorded usage: " . $lowest_usage . " litres</p>";
+      echo "<p>Highest recorded cost: KES " . $highest_cost . "</p>";
+      echo "<p>Lowest recorded cost: KES " . $lowest_cost . "</p>";
+      
+      // Offer saving guidelines
+      echo "<h3>Saving Guidelines</h3>";
+      echo "<ol>";
+      echo "<li>Fix any leaks promptly.</li>";
+      echo "<li>Install water-saving showerheads and faucet aerators.</li>";
+      echo "<li>Only run the dishwasher and washing machine with full loads.</li>";
+      echo "<li>Collect rainwater for watering plants.</li>";
+      echo "<li>Water your garden during the early morning or late evening to reduce evaporation.</li>";
+      echo "<li>Turn off the tap while brushing your teeth or washing your face.</li>";
+      echo "</ol>";
+      ?>
+
+</body>
+</html>
+
   `);
   printWindow.document.close();
 }
@@ -566,7 +684,7 @@ $conn->close();
 <head>
     <link href="assets/img/favicon.png" rel="icon">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <title>Print Current Bill</title>
+    <title>Water Usage Bill</title>
     <style>
         body { font-family: Arial, sans-serif; margin: 0; }
         header { background-color: black; color: white; padding: 5px 0; text-align: center; }
@@ -581,6 +699,8 @@ $conn->close();
         table { border-collapse: collapse; width: 100%; margin-bottom: 20px; }
         th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
         th { background-color: grey; color: white; }
+        html{ background-color: black;}
+        body{ background-color:white;}
         @media print {
     .no-print {
         display: none;
@@ -591,8 +711,10 @@ $conn->close();
 </head>
 <body>
     <header>
-        <h1>Water Usage Bill</h1>
-        <button onclick="window.print();" class="btn no-print"><i class="fas fa-print"></i> Click here to Print</button>
+    <h1>OKOA MAJI PLATFORM</h1>
+    <br>
+        <h3>WATER BILL REPORT</h3>
+       
     </header>
     <main>
     <?php
@@ -608,13 +730,13 @@ $conn = new mysqli($servername, $username, $password, $dbname);
 if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
-$sql = "SELECT * FROM users WHERE id = 19"; // Replace with the desired user ID
+$sql = "SELECT * FROM users WHERE id = 1"; // Replace with the desired user ID
 $result = $conn->query($sql);
 
 if ($result->num_rows > 0) {
     // Fetch and display user information
     $row = $result->fetch_assoc();
-    echo "<h3>Customer Information</h3>";
+    echo "<h3>User Information</h3>";
     echo "<p>Name: " . $row["first_name"] ." ".$row["last_name"] . "</p>";
     echo "<p>Email Address: " . $row["email"] . "</p>";
 } else {
@@ -625,120 +747,71 @@ $conn->close();
 ?>
         <h3>Bill Summary</h3>
         <table class="table table-bordered">
-    <thead>
-        <tr>
-            <th>Service Period</th>
-            <th>Usage (Gallons)</th>
-            <th>Rate per 1000 Gallons</th>
-            <th>Amount</th>
-        </tr>
-    </thead>
-    <tbody>
+  <thead>
     <tr>
-            <td>01/01/2023 - 01/31/2023</td>
-            <td>6,000</td>
-            <td>KES 3.50</td>
-            <td>KES 21.00</td>
-        </tr>
-        <tr>
-            <td>01/01/2023 - 01/31/2023</td>
-            <td>6,000</td>
-            <td>KES 3.50</td>
-            <td>KES 21.00</td>
-        </tr>
-        <tr>
-            <td>01/01/2023 - 01/31/2023</td>
-            <td>6,000</td>
-            <td>KES 3.50</td>
-            <td>KES 21.00</td>
-        </tr>
-        <tr>
-            <td>02/01/2023 - 02/28/2023</td>
-            <td>6,000</td>
-            <td>KES 3.50</td>
-            <td>KES 21.00</td>
-        </tr>
-        <tr>
-            <td>03/01/2023 - 03/31/2023</td>
-            <td>6,000</td>
-            <td>KES 3.50</td>
-            <td>KES 21.00</td>
-        </tr>
-        <tr>
-            <td>03/01/2023 - 03/31/2023</td>
-            <td>6,000</td>
-            <td>KES 3.50</td>
-            <td>KES 21.00</td>
-        </tr>
-        <tr>
-            <td>03/01/2023 - 03/31/2023</td>
-            <td>6,000</td>
-            <td>KES 3.50</td>
-            <td>KES 21.00</td>
-        </tr>
-        <!-- ... -->
-        <tr>
-            <td>12/01/2023 - 12/31/2023</td>
-            <td>6,000</td>
-            <td>KES 3.50</td>
-            <td>KES 21.00</td>
-        </tr>
-        <tr>
-            <td>03/01/2023 - 03/31/2023</td>
-            <td>6,000</td>
-            <td>KES 3.50</td>
-            <td>KES 21.00</td>
-        </tr>
-        <tr>
-            <td>03/01/2023 - 03/31/2023</td>
-            <td>6,000</td>
-            <td>KES 3.50</td>
-            <td>KES 21.00</td>
-        </tr>
-        <tr>
-            <td>01/01/2024 - 01/31/2024</td>
-            <td>6,000</td>
-            <td>KES 3.50</td>
-            <td>KES 21.00</td>
-        </tr>
-        <tr>
-            <td>03/01/2023 - 03/31/2023</td>
-            <td>6,000</td>
-            <td>KES 3.50</td>
-            <td>KES 21.00</td>
-        </tr>
-        <tr>
-            <td>03/01/2023 - 03/31/2023</td>
-            <td>6,000</td>
-            <td>KES 3.50</td>
-            <td>KES 21.00</td>
-        </tr>
-        <tr>
-            <td>02/01/2024 - 02/28/2024</td>
-            <td>6,000</td>
-            <td>KES 3.50</td>
-            <td>KES 21.00</td>
-        </tr>
-        <tr>
-            <td>03/01/2023 - 03/31/2023</td>
-            <td>6,000</td>
-            <td>KES 3.50</td>
-            <td>KES 21.00</td>
-        </tr>
-        <tr>
-            <td>03/01/2023 - 03/31/2023</td>
-            <td>6,000</td>
-            <td>KES 3.50</td>
-            <td>KES 21.00</td>
-        </tr>
-    </tbody>
+      <th>Time and Date</th>
+      <th>Usage</th>
+      <th>Rate per unit</th>
+      <th>Amount</th>
+    </tr>
+  </thead>
+  <tbody>
+    <?php
+    // Connect to the database
+    $servername = "localhost";
+    $username = "admin";
+    $password = "admin1234";
+    $dbname = "okoamaji";
+
+    $conn = new mysqli($servername, $username, $password, $dbname);
+
+    // Check connection
+    if ($conn->connect_error) {
+      die("Connection failed: " . $conn->connect_error);
+    }
+
+    // Query the database to get the water usage data
+    $sql = "SELECT * FROM water_usage";
+    $result = $conn->query($sql);
+
+    // Initialize the total variable
+    $total = 0;
+
+    // Fetch the data and display it in the table
+    if ($result->num_rows > 0) {
+      while ($row = $result->fetch_assoc()) {
+        $amount = $row['usage'] * 100 ; // Calculate the amount
+        $total += $amount; // Add the amount to the total
+
+        echo "<tr>";
+        echo "<td>" . $row['created_at'] . "</td>";
+        echo "<td>" . $row['usage'] . " litres"."</td>";
+        echo "<td> 100 ksh</td>";
+        echo "<td>KES " . number_format($amount, 2) . "</td>";
+        echo "</tr>";
+      }
+    }
+
+    // Close the database connection
+    $conn->close();
+    ?>
+  </tbody>
+  <tfoot>
+    <tr>
+      <td colspan="3" class="text-right"><strong>Total Amount Due:</strong></td>
+      <td>KES <?php echo number_format($total, 2); ?></td>
+    </tr>
+  </tfoot>
 </table>
 
+
 <h3>Total Amount Due</h3>
-<p><strong>KES 315.00</strong></p>
+<p><strong><?php echo number_format($total, 2); ?> KES</strong></p>  <button onclick="window.print();" class="btn no-print"><i class="fas fa-print"></i> Click here to Print</button>
 
     </main>
     <footer>
+    <h5>By conserving water, you're not only helping the environment but also saving money on your monthly bill. Thank you for being a responsible water user!</h5>
+
         <h5>&copy; Water Usage Bill - Generated on ${new Date().toLocaleString()}</h5>
     </footer>
 </body>
@@ -755,51 +828,142 @@ $conn->close();
   function printWaterUsageChart() {
   var printWindow = window.open('', '_blank');
   printWindow.document.write(`
-    <html>
+  <!DOCTYPE html>
+<html>
+<head>
     <link href="assets/img/favicon.png" rel="icon">
-        <head>
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-            <title>Print Usage Summary</title>
-            <style>
-                body { font-family: Arial, sans-serif; margin: 0; }
-                header { background-color: #3f51b5; color: white; padding: 15px 0; text-align: center; }
-                h1 { font-size: 24px; margin-bottom: 0; }
-                footer { background-color: #3f51b5; color: white; padding: 40px 0; text-align: center; }
-                p { font-size: 18px; margin-top: 0; text-align: center; }
-                h3 { font-size: 20px; margin-bottom: 10px; }
-                ol { font-size: 16px; }
-                img { display: block; margin: 20px auto; width: 75%; }
-                button { display: block; margin: 20px auto; font-size: 18px; }
-                main { padding: 20px; }
-            </style>
-        </head>
-        <body>
-            <header>
-                <h1>USAGE TREND - OKOA MAJI APP</h1><button onclick="window.print();" class="btn"><i class="fas fa-print"></i></button>
-            </header>
-            <main>
-                <p>This chart represents the amount of water used (in litres) at different times and dates and helps you keep track of your usage trends.</p>
-              
-                <hr>
-                <img src="${waterUsageChart.toBase64Image()}" alt="Water Usage Chart"/>
-                <br>
-                <hr>
-                
-                <h3>Recommendations on How to Save Water:</h3>
-                <ol>
-                  <li>Turn off the tap while brushing your teeth or washing your face.</li>
-                  <li>Fix any leaks in your home promptly.</li>
-                  <li>Install water-saving showerheads and faucet aerators.</li>
-                  <li>Only run the dishwasher and washing machine with full loads.</li>
-                  <li>Collect rainwater for watering plants.</li>
-                  <li>Water your garden during the early morning or late evening to reduce evaporation.</li>
-                </ol>
-            </main>
-            <footer>
-                <p>&copy; Water Usage Report - Generated on ${new Date().toLocaleString()}</p>
-            </footer>
-        </body>
-    </html>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <title>Print Current Bill</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 0; }
+        header { background: linear-gradient(180deg, #0077be 0%, #008ecc 50%, #00b8f0 100%); color: white; padding: 5px 0; text-align: center; }
+        h1 { font-size: 24px; margin-bottom: 0; }
+        footer { background: linear-gradient(180deg, #0077be 0%, #008ecc 50%, #00b8f0 100%); color: white; padding: 20px 0; text-align: center; }
+        p { font-size: 18px; margin-top: 0; text-align: left; }
+        h3 { font-size: 20px; margin-bottom: 10px; }
+        ol { font-size: 16px; }
+        img { display: block; margin: 20px auto; width: 75%; }
+        button { display: block; margin: 20px auto; font-size: 18px; }
+        main { padding: 20px; }
+        table { border-collapse: collapse; width: 100%; margin-bottom: 20px; }
+        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+        th { background: linear-gradient(180deg, #0077be 0%, #008ecc 50%, #00b8f0 100%); color: white; }
+        html{ background-color: white;}
+        body{ background-color:white;}
+        @media print {
+    .no-print {
+        display: none;
+    }
+}
+
+    </style>
+</head>
+<body>
+    <header>
+    <h1>OKOA MAJI PLATFORM</h1>
+    <br>
+        <h3>WATER USAGE REPORT</h3>
+       
+    </header>
+    <main>
+    <?php
+$servername = "localhost";
+$username = "admin";
+$password = "admin1234";
+$dbname = "okoamaji";
+
+// Create connection
+$conn = new mysqli($servername, $username, $password, $dbname);
+
+// Check connection
+if ($conn->connect_error) {
+    die("Connection failed: " . $conn->connect_error);
+}
+$sql = "SELECT * FROM users WHERE id = 1"; // Replace with the desired user ID
+$result = $conn->query($sql);
+
+if ($result->num_rows > 0) {
+    // Fetch and display user information
+    $row = $result->fetch_assoc();
+    echo "<h3>User Information</h3>";
+    echo "<p>Name: " . $row["first_name"] ." ".$row["last_name"] . "</p>";
+    echo "<p>Email Address: " . $row["email"] . "</p>";
+} else {
+    echo "<p>No user information found.</p>";
+}
+
+$conn->close();
+?>
+        <h3>USAGE SUMMARY</h3>
+        <table class="table table-bordered">
+  <thead>
+    <tr>
+      <th>Time and Date</th>
+      <th>Amount in Litres</th>
+    </tr>
+  </thead>
+  <tbody>
+    <?php
+    // Connect to the database
+    $servername = "localhost";
+    $username = "admin";
+    $password = "admin1234";
+    $dbname = "okoamaji";
+
+    $conn = new mysqli($servername, $username, $password, $dbname);
+
+    // Check connection
+    if ($conn->connect_error) {
+      die("Connection failed: " . $conn->connect_error);
+    }
+
+    // Query the database to get the water usage data
+    $sql = "SELECT * FROM water_usage";
+    $result = $conn->query($sql);
+
+    // Initialize the total variable
+    $total = 0;
+
+    // Fetch the data and display it in the table
+    if ($result->num_rows > 0) {
+      while ($row = $result->fetch_assoc()) {
+        $amount = $row['usage'] ; // Calculate the amount
+        $total += $amount; // Add the amount to the total
+
+        echo "<tr>";
+        echo "<td>" . $row['created_at'] . "</td>";
+        echo "<td>" . $row['usage'] . "litres"."</td>";
+        echo "</tr>";
+      }
+    }
+
+    // Close the database connection
+    $conn->close();
+    ?>
+  </tbody>
+  <tfoot>
+  <tr>
+    <td class="text-right" style="width: 50%;"><strong>Total Amount Used:</strong></td>
+    <td style="width: 50%;"><strong><span style="color:blue;"> <?php echo number_format($total, 2); ?></span> Litres</strong></td>
+  </tr>
+</tfoot>
+
+</table>
+
+
+
+
+<h3>Total Amount Used</h3>
+<p style="color:blue;"><strong><?php echo number_format($total, 2); ?> Litres</strong></p>  <button onclick="window.print();" class="btn no-print"><i class="fas fa-print"></i> Click here to Print</button>
+
+    </main>
+    <footer>
+    <h5>  Water is a precious resource, so let's all do our part to conserve it. <br>Remember to fix leaks, turn off taps when not in use, and use water-efficient appliances. <br>Together, we can ensure that we have a sustainable water supply for generations to come.</h5>
+
+        <h5>&copy; Water Usage Summary - Generated on ${new Date().toLocaleString()}</h5>
+    </footer>
+</body>
+</html>
   `);
   printWindow.document.close();
 }
