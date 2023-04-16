@@ -18,6 +18,8 @@
   <link href="assets/vendor/simple-datatables/style.css" rel="stylesheet">
   <link href="assets/css/style.css" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.15.4/css/all.css" integrity="..." crossorigin="anonymous" />
+
 
   <!--  Begin Header -->
   <header id="header" class="header fixed-top d-flex align-items-center">
@@ -76,8 +78,16 @@
 <body>
   <div class="container mt-4 mb-4">
     <p class="alert alert-info text-center" role="alert">
-      WELCOME TO THE OKOA MAJI APP  
+     HELLO! WELCOME TO THE OKOA MAJI APP  
           </p>  
+          <p class="card-title">THIS PLATFORM HELPS YOU TO:</p>
+          <ul class="list-unstyled alert alert-success">
+  <li><i class="fas fa-check"></i> Monitor and track your water usage.</li>
+  <li><i class="fas fa-check"></i> Provide you with real-time visual information on your water consumption and estimated bills.</li>
+  <li><i class="fas fa-check"></i> Adopt more water-efficient behaviours and reduce water waste through articles and resources.</li>
+  <li><i class="fas fa-check"></i> generate reports on your usage trends so as to help you make more informed decisions based on your data.</li>
+  <li><i class="fas fa-check"></i> Keep track and stay within budget by setting cost and usage targets and help them work towards saving more water and, in turn, money.</li>
+</ul>
           <div class="card rounded-3">
             <img src="https://www.cairowestmag.com/wp-content/uploads/2021/04/how-to-save-water-infographic.jpg" class="card-img-top rounded-3" alt="...">        
           </div>
@@ -88,69 +98,14 @@
         In households and industrial settings, monitoring and understanding water usage patterns
         is crucial to reduce waste and conserving resources. 
         This platform helps you track and analyze water usage in real-time.
+        </p>  
         <br>
-        Below are some of the benefits of tracking water usage.
-    </p>  
-    <div class="row">
-      <div class="col-md-6">
-        <div class="card mb-3">
-          <div class="card-body">
-            <h5 class="card-title">Conservation of resources</h5>
-            <p class="card-text">Water is a precious resource that is becoming increasingly scarce. Tracking water usage helps people conserve water.</p>
+        <div class="card rounded-3">
+        <iframe style="border-radius: 20px;" src="https://www.youtube.com/embed/4MDLpVHY8LE" height="700px" allowfullscreen></iframe>
           </div>
-          <div class="card-footer">
-            <i class="bi bi-droplet"></i> Water
-          </div>
-        </div>
-      </div>
-      <div class="col-md-6">
-        <div class="card mb-3">
-          <div class="card-body">
-            <h5 class="card-title">Increased awareness</h5>
-            <p class="card-text">Tracking water usage helps to create awareness of how much water is being used and wasted.</p>
-          </div>
-          <div class="card-footer">
-            <i class="bi bi-gem"></i> Conservation
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="row">
-      <div class="col-md-6">
-        <div class="card mb-3">
-          <div class="card-body">
-            <h5 class="card-title">Contribution to SDG 6</h5>
-            <p class="card-text">Tracking water usage contributes to achieving Sustainable Development Goal 6.</p>
-          </div>
-          <div class="card-footer">
-            <i class="bi bi-info-circle"></i> #SDG6
-          </div>
-        </div>
-      </div>
-      <div class="col-md-6">
-        <div class="card mb-3">
-          <div class="card-body">
-            <h5 class="card-title">Efficient usage</h5>
-            <p class="card-text">you can identify where they are using more water and make changes.</p>
-          </div>
-          <div class="card-footer">
-            <i class="bi bi-gear"></i> Efficiency
-          </div>
-        </div>
-      </div>
-    </div>
-    <br>
-    <hr>
-    <div class="card mb-3">
-      <div class="card-body">
-        <h5 class="card-title text-center" >#OKOAMAJI</h5>
-        <div class="ratio ratio-16x9 mb-3">
-          <iframe style="border-radius: 15px;" src="https://www.youtube.com/embed/4MDLpVHY8LE" allowfullscreen></iframe>
-        </div>
-        <p class="card-text">Learn more about water conservation with this informative video. It provides helpful tips on reducing water waste at home and in the community.</p>
-      </div>
-    </div>
     
+  
+  </div>
 </div>
 </body>  
       </body>
