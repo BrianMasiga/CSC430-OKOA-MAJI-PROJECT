@@ -53,7 +53,7 @@
                     href="index.php"
                     class="logo d-flex align-items-center w-auto"
                   >
-                    <span class="d-none d-lg-block">#OKOAMAJI</span>
+                  <span class="d-none d-lg-block"><img src="assets/img/favicon.png" rel="icon"/></span>
                   </a>
                 </div>
                 <!-- End Logo -->
@@ -85,30 +85,23 @@
   </div>
   <div class="col-12">
     <label for="yourPassword" class="form-label">Password</label>
-    <input
-      type="password"
-      name="password"
-      class="form-control"
-      id="yourPassword"
-      required
-    />
+    <div class="input-group">
+      <input
+        type="password"
+        name="password"
+        class="form-control"
+        id="yourPassword"
+        required
+      />
+      <button class="btn btn-outline-secondary" type="button" id="togglePassword">
+        <i class="bi bi-eye"></i>
+      </button>
+    </div>
     <div class="invalid-feedback">
       Please enter your password!
     </div>
   </div>
   <div class="col-12">
-    <div class="form-check">
-      <input
-        class="form-check-input"
-        type="checkbox"
-        name="remember"
-        value="true"
-        id="rememberMe"
-      />
-      <label class="form-check-label" for="rememberMe"
-        >Remember me</label
-      >
-    </div>
   </div>
 
   <div class="col-12">
@@ -128,19 +121,28 @@
     </p>
   </div>
   <!-- Add this div element to the HTML code -->
-<div id="error-message" class="alert alert-danger d-none" role="alert">
-  Wrong email or password.
-</div>
-
+  <div id="error-message" class="alert alert-danger d-none" role="alert">
+    Wrong email or password.
+  </div>
 </form>
+
+<script>
+  const togglePasswordBtn = document.getElementById("togglePassword");
+  const passwordInput = document.getElementById("yourPassword");
+  togglePasswordBtn.addEventListener("click", () => {
+    const type = passwordInput.getAttribute("type") === "password" ? "text" : "password";
+    passwordInput.setAttribute("type", type);
+    togglePasswordBtn.innerHTML = type === "password" ? '<i class="bi bi-eye alert-danger"></i>' : '<i class="bi bi-eye-slash"></i>';
+  });
+</script>
+
 <script>
   // Check if PHP variable is set and show error message
   <?php if (isset($error_message)): ?>
     document.getElementById("error-message").classList.remove("d-none");
   <?php endif; ?>
 </script>
-
-                    <script>
+<script>
                       
 function login(event) {
   // prevent form submission if input fields are invalid

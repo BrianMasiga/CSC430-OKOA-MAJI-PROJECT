@@ -54,7 +54,7 @@
                     href="index.php"
                     class="logo d-flex align-items-center w-auto"
                   >
-                    <span class="d-none d-lg-block">#OKOAMAJI</span>
+                    <span class="d-none d-lg-block"><img src="assets/img/favicon.png" rel="icon"/></span>
                   </a>
                 </div>
                 <div class="card mb-3">
@@ -142,7 +142,7 @@
                             <a href="#">terms and conditions</a></label
                           >
                           <div class="invalid-feedback">
-                            You must agree before submitting.
+                            You must agree before creating an account.
                           </div>
                         </div>
                       </div>

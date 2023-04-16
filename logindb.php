@@ -36,13 +36,13 @@ if ($result->num_rows == 1) {
         exit;
     } else {
         // password incorrect, show error message
-        echo "<script>alert('Your input is incorrect! Please check and try again');</script>";
+        echo "<script>alert('Your password is incorrect! Please check and try again');</script>";
         echo "<meta http-equiv='refresh' content='2;url=login.php'>";
     }
 } else {
     // user not found, show error message
-    echo "<script>alert('Your input is incorrect! Please check and try again');</script>";
-    echo "<meta http-equiv='refresh' content='2;url=login.php'>";
+    echo "<script>alert('The details you have provided do not exist in our database /n We will automatically redirect you to the user registration page so you can create a new account!');</script>";
+    echo "<meta http-equiv='refresh' content='2;url=register.php'>";
 }
 
 
