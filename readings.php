@@ -46,13 +46,13 @@
   <aside id="sidebar" class="sidebar">
     <ul class="sidebar-nav" id="sidebar-nav">
       <li class="nav-item">
-        <a class="nav-link " href="index.php">
+        <a class="nav-link collapsed" href="index.php">
           <i class="bi bi-grid"></i>
           <span>Home</span>
         </a>
       </li>
       <li class="nav-item">
-        <a class="nav-link collapsed" href="readings.php">
+        <a class="nav-link" href="readings.php">
           <i class="bi bi-bar-chart"></i>
           <span>Readings</span>
         </a>
@@ -86,7 +86,9 @@
   <main id="main" class="main">
   </div>
 <body>
-  
+  <?php
+  error_reporting(E_ERROR); // Only report errors, hide warnings and notices
+  ?>
 <script>
   // Select the <span> elements by their IDs
 const totalWaterSpan = document.getElementById("total-water");
@@ -120,7 +122,7 @@ estimatedCostSpan.textContent = totalCost.toFixed(2) + " Ksh";
   </div>
   <div class="form-group">
     <label for="current-reading">CURRENT READING:</label>
-    <input type="number" class="form-control" id="current-reading" name="current_reading" value="<?php echo $row['current_reading'] ?>" step="any" required>
+    <input type="number" class="form-control" id="current-reading" name="current_reading" value="<?php echo @$row['current_reading'] ?>" step="any" required>
   </div>
   <div class="form-group">
     <label for="cost-per-liter">COST IN KSH:</label>
@@ -132,30 +134,44 @@ estimatedCostSpan.textContent = totalCost.toFixed(2) + " Ksh";
 </form>
 <?php
 // Get the form data
-$previous_reading = $_POST['previous_reading'] ?? '';
-$current_reading = $_POST['current_reading'] ?? '';
-$cost_per_liter = $_POST['cost_per_liter'] ?? '';
+if (!empty($_POST)) {
+  $previous_reading = $_POST['previous_reading'] ?? '';
+  $current_reading = $_POST['current_reading'] ?? '';
+  $cost_per_liter = $_POST['cost_per_liter'] ?? '';
 
+  $servername = "localhost";
+  $username = "admin";
+  $password = "admin1234";
+  $dbname = "okoamaji";
 
-$servername = "localhost";
-$username = "admin";
-$password = "admin1234";
-$dbname = "okoamaji";
+  $conn = new mysqli($servername, $username, $password, $dbname);
 
-$conn = new mysqli($servername, $username, $password, $dbname);
+  // Check connection
+  if ($conn->connect_error) {
+    die("Connection failed: " . $conn->connect_error);
+  }
 
-// Check connection
-if ($conn->connect_error) {
-  die("Connection failed: " . $conn->connect_error);
+  // Check if the current input is the same as the previous input
+  $row = array();
+$sql = "SELECT current_reading, previous_reading, cost_per_liter FROM water_usage ORDER BY id DESC LIMIT 1";
+$result = $conn->query($sql);
+
+if ($result && $result->num_rows > 0) {
+  $row = $result->fetch_assoc();
 }
 
-// Insert the data into the table
-$sql = "INSERT INTO water_usage (previous_reading, current_reading, cost_per_liter) VALUES ('$previous_reading', '$current_reading', '$cost_per_liter')";
+  if ($row['current_reading'] != $current_reading) {
+    // Insert the data into the table
+    $sql = "INSERT INTO water_usage (previous_reading, current_reading, cost_per_liter) 
+            VALUES ('$previous_reading', '$current_reading', '$cost_per_liter')";
 
-if ($conn->query($sql) === TRUE) {
-  echo "";
-} else {
-  echo "Error: " . $sql . "<br>" . $conn->error;
+    if ($conn->query($sql) === TRUE) {
+      echo "";
+    } else {
+      echo "Error: " . $sql . "<br>" . $conn->error;
+    }
+  }
+
 }
 
 // Check if the clear records button was clicked
@@ -168,8 +184,7 @@ if (isset($_POST['clear_records'])) {
     echo "Error: " . $sql . "<br>" . $conn->error;
   }
 }
-// Close the database connection
-$conn->close();
+
 ?>
 
     <br>
@@ -235,7 +250,7 @@ $conn->close();
         echo "<td><strong>" . $totalCost . "</strong> Ksh</td>";
         echo "</tr>";
       } else {
-        echo "<tr><td colspan='5'>No data found</td></tr>";
+        echo "<tr><td colspan='5'>No Usage Data Has Been Recorded!</td></tr>";
       }
   
       // Close the database connection
@@ -566,48 +581,93 @@ $conn->close();
   function printWaterUsageChart() {
   var printWindow = window.open('', '_blank');
   printWindow.document.write(`
-    <html>
-    <link href="assets/img/favicon.png" rel="icon">
-        <head>
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-            <title>Print Usage Trend</title>
-            <style>
-                body { font-family: Arial, sans-serif; margin: 0; }
-                header { background-color: #3f51b5; color: white; padding: 15px 0; text-align: center; }
-                h1 { font-size: 24px; margin-bottom: 0; }
-                footer { background-color: #3f51b5; color: white; padding: 40px 0; text-align: center; }
-                p { font-size: 18px; margin-top: 0; text-align: center; }
-                h3 { font-size: 20px; margin-bottom: 10px; }
-                ol { font-size: 16px; }
-                img { display: block; margin: 20px auto; width: 75%; }
-                button { display: block; margin: 20px auto; font-size: 18px; }
-                main { padding: 20px; }
-            </style>
-        </head>
-        <body>
-            <header>
-                <h1>USAGE TREND - OKOA MAJI APP</h1><button onclick="window.print();" class="btn"><i class="fas fa-print"></i></button>
-            </header>
-            <main>                
-                <img src="${waterUsageChart.toBase64Image()}" alt="Water Usage Chart"/>
-                <br>
-                <hr>
-                
-                <h3>Recommendations on How to Save Water:</h3>
-                <ol>
-                  <li>Turn off the tap while brushing your teeth or washing your face.</li>
-                  <li>Fix any leaks in your home promptly.</li>
-                  <li>Install water-saving showerheads and faucet aerators.</li>
-                  <li>Only run the dishwasher and washing machine with full loads.</li>
-                  <li>Collect rainwater for watering plants.</li>
-                  <li>Water your garden during the early morning or late evening to reduce evaporation.</li>
-                </ol>
-            </main>
-            <footer>
-                <p>&copy; Water Usage Report - Generated on ${new Date().toLocaleString()}</p>
-            </footer>
-        </body>
-    </html>
+  <!DOCTYPE html>
+<html>
+<head>
+  <title>Water Usage Report</title>
+</head>
+<body>
+  <h1>Water Usage Report</h1>
+
+  <?php
+      // Connect to the database
+      $servername = "localhost";
+      $username = "admin";
+      $password = "admin1234";
+      $dbname = "okoamaji";
+      $conn = new mysqli($servername, $username, $password, $dbname);
+      
+      // Check connection
+      if ($conn->connect_error) {
+        die("Connection failed: " . $conn->connect_error);
+      }
+      
+      // Query the database to get the water usage data
+      $sql = "SELECT * FROM water_usage";
+      $result = $conn->query($sql);
+      
+      // Initialize the variables for the highest and lowest usage and cost
+      $highest_usage = 0;
+      $highest_cost = 0;
+      $lowest_usage = PHP_INT_MAX;
+      $lowest_cost = PHP_INT_MAX;
+      
+      // Fetch the data and display it in the table
+      if ($result->num_rows > 0) {
+        echo "<h3>Water Usage Report</h3>";
+        echo "<table>";
+        echo "<tr><th>Time and Date</th><th>Usage (litres)</th><th>Cost (KES)</th></tr>";
+        while ($row = $result->fetch_assoc()) {
+          // Update the highest and lowest usage and cost variables
+          if ($row['usage'] > $highest_usage) {
+            $highest_usage = $row['usage'];
+          }
+          if ($row['usage'] < $lowest_usage) {
+            $lowest_usage = $row['usage'];
+          }
+          if ($row['cost'] > $highest_cost) {
+            $highest_cost = $row['cost'];
+          }
+          if ($row['cost'] < $lowest_cost) {
+            $lowest_cost = $row['cost'];
+          }
+      
+          echo "<tr>";
+          echo "<td>" . $row['recorded_at'] . "</td>";
+          echo "<td>" . $row['usage'] . "</td>";
+          echo "<td>" . $row['cost'] . "</td>";
+          echo "</tr>";
+        }
+        echo "</table>";
+      } else {
+        echo "<p>No water usage data found.</p>";
+      }
+      
+      // Close the database connection
+      $conn->close();
+      
+      // Display the highest and lowest usage and cost
+      echo "<h3>Highest and Lowest Usage and Cost</h3>";
+      echo "<p>Highest recorded usage: " . $highest_usage . " litres</p>";
+      echo "<p>Lowest recorded usage: " . $lowest_usage . " litres</p>";
+      echo "<p>Highest recorded cost: KES " . $highest_cost . "</p>";
+      echo "<p>Lowest recorded cost: KES " . $lowest_cost . "</p>";
+      
+      // Offer saving guidelines
+      echo "<h3>Saving Guidelines</h3>";
+      echo "<ol>";
+      echo "<li>Fix any leaks promptly.</li>";
+      echo "<li>Install water-saving showerheads and faucet aerators.</li>";
+      echo "<li>Only run the dishwasher and washing machine with full loads.</li>";
+      echo "<li>Collect rainwater for watering plants.</li>";
+      echo "<li>Water your garden during the early morning or late evening to reduce evaporation.</li>";
+      echo "<li>Turn off the tap while brushing your teeth or washing your face.</li>";
+      echo "</ol>";
+      ?>
+
+</body>
+</html>
+
   `);
   printWindow.document.close();
 }
