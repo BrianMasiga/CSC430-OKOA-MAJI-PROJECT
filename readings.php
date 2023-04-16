@@ -106,92 +106,6 @@ estimatedCostSpan.textContent = totalCost.toFixed(2) + " Ksh";
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
 </head>
-<body>
-    <div class="container">
-        <button class="btn btn-primary mt-3 w-100" data-bs-toggle="modal" data-bs-target="#timerModal">Click to Set a reminder</button>
-        <p class="mt-3">Time remaining until next record: <span id="timeRemaining">you have not set a time interval!</span></p>
-    </div>
-
-    <div class="modal fade" id="timerModal" tabindex="-1" aria-labelledby="timerModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="timerModalLabel">This timer reminds you to record your usage data after a set period</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <label for="timerInput">Enter the interval in minutes:</label>
-                    <input type="number" class="form-control" id="timerInput" min="1">
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-primary" id="saveBtn">Save</button>
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <script>
-        const timerInput = document.getElementById("timerInput");
-        const saveBtn = document.getElementById("saveBtn");
-        const timeRemaining = document.getElementById("timeRemaining");
-        let countdown;
-        let timerAlert;
-
-        function updateRemainingTime(seconds) {
-            const minutes = Math.floor(seconds / 60);
-            const remainingSeconds = seconds % 60;
-            timeRemaining.textContent = `${minutes}m ${remainingSeconds}s`;
-        }
-
-        saveBtn.addEventListener("click", () => {
-            const minutes = parseInt(timerInput.value);
-            if (minutes > 0) {
-                if (countdown) {
-                    clearInterval(countdown);
-                }
-                if (timerAlert) {
-                    clearTimeout(timerAlert);
-                }
-                const endTime = Date.now() + minutes * 60 * 1000;
-                let remainingSeconds = minutes * 60;
-
-                updateRemainingTime(remainingSeconds);
-
-                countdown = setInterval(() => {
-                    remainingSeconds--;
-                    updateRemainingTime(remainingSeconds);
-
-                    if (remainingSeconds <= 0) {
-                        clearInterval(countdown);
-                        timeRemaining.textContent = "Time's up! set a new interval";
-                        showAlert();
-                    }
-                }, 1000);
-
-                timerAlert = setTimeout(() => {
-                    clearInterval(countdown);
-                }, minutes * 60 * 1000);
-
-                const timerModal = bootstrap.Modal.getInstance(document.getElementById('timerModal'));
-                timerModal.hide();
-            }
-        });
-
-        function showAlert() {
-            const alertContainer = document.createElement('div');
-            alertContainer.innerHTML = `
-                <div class="alert alert-dismissible alert-danger fixed-top m-3" role="alert">
-                   Hello there! It's time to record your usage data. Constant recording will help you keep track of your usage and help you save more.
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                </div>
-            `;
-
-            document.body.appendChild(alertContainer);
-        }
-    </script>
-</body>
-
 
   <div class="container mt-4 mb-4">
   
@@ -332,7 +246,9 @@ $conn->close();
 <br>
   <div class="col-md-12"><form id="clear-records-form" method="post" action="clear_records.php">
   <button type="submit" class="btn btn-danger w-100">CLEAR RECORDS</button></div>
-
+  <br>
+    <span><button type="submit" class="btn btn-secondary w-100" id="generateReport"> PRINT USAGE SUMMARY</button></span>
+    <br>
 </div>
 </form>
   </div>
@@ -440,7 +356,6 @@ printButton.addEventListener('click', () => {
 </body>
       </body>
     <div class="container">
-    <hr>
     <?php
 $servername = "localhost";
 $username = "admin";
@@ -471,32 +386,33 @@ $conn->close();
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <!-- Next, add the canvas element to your HTML -->
-<div class="container-fluid">
-  <div class="row">
-    <div class="col-md-6">
+
+    <div class="col-md-12">
       <div class="card">
         <div class="card-title text-center">
-          USAGE TREND <span class="fa fa-chart"></span>
+          WATER USAGE TREND <span class="fa fa-chart"></span>
         </div>
         <div class="card-body">
-          <canvas id="waterUsageChart" width="800" height="400"></canvas>
-          <br>
-        </div>
+          <canvas id="waterUsageChart" width="900" height="400"></canvas>
+     </div>
       </div>
     </div>
-    <div class="col-md-6">
+    <span><button type="submit" class="btn btn-success w-100" id="printChart">PRINT USAGE TREND</button></span>
+<br>
+<br>
+<br>
+    <div class="col-md-12">
       <div class="card">
         <div class="card-title text-center">
-          COST TREND <span class="fa fa-chart"></span>
+          COST ACCRUED TREND<span class="fa fa-chart"></span>
         </div>
         <div class="card-body">
-          <canvas id="costChart" width="800" height="400"></canvas>
-          <br>
+          <canvas id="costChart" width="900" height="400"></canvas>
         </div>
       </div>
+      <span><button type="submit" class="btn btn-danger w-100" id="forecast">  PRINT USAGE BILL</button></span>
     </div>
-  </div>
-</div>
+
 
 
 <!-- Finally, add the following PHP and JavaScript code to retrieve the data and create the chart -->
@@ -544,8 +460,7 @@ $conn->close();
     datasets: [{
       label: 'Water Usage',
       data: <?php echo json_encode($data); ?>,
-      backgroundColor: 'rgba(54, 162, 235, 0.5)',
-      borderColor: 'rgba(54, 162, 235, 1)',
+      backgroundColor: 'green',
       borderWidth: 1
     }]
   };
@@ -565,7 +480,7 @@ $conn->close();
 
   // Create the chart
   var waterUsageChart = new Chart(ctx, {
-    type: 'bar',
+    type: 'line',
     data: data,
     options: options
   });
@@ -623,8 +538,7 @@ $conn->close();
     datasets: [{
       label: 'Cost',
       data: <?php echo json_encode($data); ?>,
-      backgroundColor: 'rgba(255, 206, 86, 0.5)',
-      borderColor: 'rgba(255, 206, 86, 1)',
+      backgroundColor: 'red',
       borderWidth: 1
     }]
   };
@@ -645,21 +559,6 @@ $conn->close();
     options: options
   });
 </script>
-    <div class="alert alert-info text-center" role="alert"> PRINT REPORTS BELOW  <i class="fa fa-list-alt"></i></div>
-
-    <span><button type="submit" class="btn btn-warning w-100" id="printChart">PRINT USAGE TREND</button></span>
-    <br>
-    <br>
-    <span><button type="submit" class="btn btn-secondary w-100" id="generateReport"> PRINT USAGE SUMMARY</button></span>
-    <br>
-    <br>
-    <span><button type="submit" class="btn btn-dark w-100" id="forecast">  PRINT CURRENT BILL</button></span>
-    <br>
-    <br>
-    <script src="charts.js"></script>
-
-<br>
-
 <script>
   
   document.getElementById('printChart').addEventListener('click', printWaterUsageChart);
@@ -689,11 +588,7 @@ $conn->close();
             <header>
                 <h1>USAGE TREND - OKOA MAJI APP</h1><button onclick="window.print();" class="btn"><i class="fas fa-print"></i></button>
             </header>
-            <main>
-                <p>This chart represents the amount of water used (in litres) at different times and dates and helps you keep track of your usage trends.</p>
-              
-                <hr>
-                
+            <main>                
                 <img src="${waterUsageChart.toBase64Image()}" alt="Water Usage Chart"/>
                 <br>
                 <hr>
@@ -729,7 +624,7 @@ $conn->close();
 <head>
     <link href="assets/img/favicon.png" rel="icon">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <title>Print Current Bill</title>
+    <title>Water Usage Bill</title>
     <style>
         body { font-family: Arial, sans-serif; margin: 0; }
         header { background-color: black; color: white; padding: 5px 0; text-align: center; }
@@ -881,9 +776,9 @@ $conn->close();
     <title>Print Current Bill</title>
     <style>
         body { font-family: Arial, sans-serif; margin: 0; }
-        header { background-color: black; color: white; padding: 5px 0; text-align: center; }
+        header { background: linear-gradient(180deg, #0077be 0%, #008ecc 50%, #00b8f0 100%); color: white; padding: 5px 0; text-align: center; }
         h1 { font-size: 24px; margin-bottom: 0; }
-        footer { background-color: black; color: white; padding: 20px 0; text-align: center; }
+        footer { background: linear-gradient(180deg, #0077be 0%, #008ecc 50%, #00b8f0 100%); color: white; padding: 20px 0; text-align: center; }
         p { font-size: 18px; margin-top: 0; text-align: left; }
         h3 { font-size: 20px; margin-bottom: 10px; }
         ol { font-size: 16px; }
@@ -892,8 +787,8 @@ $conn->close();
         main { padding: 20px; }
         table { border-collapse: collapse; width: 100%; margin-bottom: 20px; }
         th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
-        th { background-color: grey; color: white; }
-        html{ background-color: black;}
+        th { background: linear-gradient(180deg, #0077be 0%, #008ecc 50%, #00b8f0 100%); color: white; }
+        html{ background-color: white;}
         body{ background-color:white;}
         @media print {
     .no-print {
@@ -944,8 +839,7 @@ $conn->close();
   <thead>
     <tr>
       <th>Time and Date</th>
-      <th>Usage</th>
-      <th>Amount</th>
+      <th>Amount in Litres</th>
     </tr>
   </thead>
   <tbody>
@@ -973,13 +867,12 @@ $conn->close();
     // Fetch the data and display it in the table
     if ($result->num_rows > 0) {
       while ($row = $result->fetch_assoc()) {
-        $amount = $row['usage'] * 100 ; // Calculate the amount
+        $amount = $row['usage'] ; // Calculate the amount
         $total += $amount; // Add the amount to the total
 
         echo "<tr>";
         echo "<td>" . $row['created_at'] . "</td>";
-        echo "<td>" . $row['usage'] . " litres"."</td>";
-        echo "<td>KES " . number_format($amount, 2) . "</td>";
+        echo "<td>" . $row['usage'] . "litres"."</td>";
         echo "</tr>";
       }
     }
@@ -989,24 +882,25 @@ $conn->close();
     ?>
   </tbody>
   <tfoot>
-    <tr>
-      <td colspan="2" class="text-right"><strong>Total Amount Due:</strong></td>
-      <td>KES <?php echo number_format($total, 2); ?></td>
-    </tr>
-  </tfoot>
+  <tr>
+    <td class="text-right" style="width: 50%;"><strong>Total Amount Used:</strong></td>
+    <td style="width: 50%;"><strong><span style="color:blue;"> <?php echo number_format($total, 2); ?></span> Litres</strong></td>
+  </tr>
+</tfoot>
+
 </table>
 
 
 
 
-<h3>Total Amount Due</h3>
-<p><strong><?php echo number_format($total, 2); ?> KES</strong></p>  <button onclick="window.print();" class="btn no-print"><i class="fas fa-print"></i> Click here to Print</button>
+<h3>Total Amount Used</h3>
+<p style="color:blue;"><strong><?php echo number_format($total, 2); ?> Litres</strong></p>  <button onclick="window.print();" class="btn no-print"><i class="fas fa-print"></i> Click here to Print</button>
 
     </main>
     <footer>
-    <h5>By conserving water, you're not only helping the environment but also saving money on your monthly bill. Thank you for being a responsible water user!</h5>
+    <h5>  Water is a precious resource, so let's all do our part to conserve it. <br>Remember to fix leaks, turn off taps when not in use, and use water-efficient appliances. <br>Together, we can ensure that we have a sustainable water supply for generations to come.</h5>
 
-        <h5>&copy; Water Usage Bill - Generated on ${new Date().toLocaleString()}</h5>
+        <h5>&copy; Water Usage Summary - Generated on ${new Date().toLocaleString()}</h5>
     </footer>
 </body>
 </html>
