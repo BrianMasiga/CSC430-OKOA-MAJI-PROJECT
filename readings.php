@@ -68,11 +68,7 @@
           <i class="bi bi-people"></i>
           <span>Community</span>
         </a>
-        <li class="nav-item">
-        <a class="nav-link collapsed" href="askmaji.php">
-          <i class="bi bi-robot"></i>
-          <span>Ask Maji</span>
-        </a>
+        </li>
       <li class="nav-item">
       <li class="nav-item">
         <a class="nav-link collapsed" href="login.php">
@@ -174,17 +170,6 @@ if ($result && $result->num_rows > 0) {
 
 }
 
-// Check if the clear records button was clicked
-if (isset($_POST['clear_records'])) {
-  // Delete all records from the table
-  $sql = "DELETE FROM water_usage";
-  if ($conn->query($sql) === TRUE) {
-    echo "Records cleared successfully";
-  } else {
-    echo "Error: " . $sql . "<br>" . $conn->error;
-  }
-}
-
 ?>
 
     <br>
@@ -231,7 +216,7 @@ if (isset($_POST['clear_records'])) {
       if ($result->num_rows > 0) {
         while($row = $result->fetch_assoc()) {
           $usage = $row["current_reading"] - $row["previous_reading"];
-          $cost = $usage * $row["cost_per_liter"];
+          $cost = $usage * $row["cost_per_liter"]/1000;
           echo "<tr>";
           echo "<td>" . $row["created_at"] . "</td>";
           echo "<td>" . $row["previous_reading"] . "</td>";
@@ -261,11 +246,15 @@ if (isset($_POST['clear_records'])) {
 <br>
   <div class="col-md-12"><form id="clear-records-form" method="post" action="clear_records.php">
   <button type="submit" class="btn btn-danger w-100">CLEAR RECORDS</button></div>
-  <br>
-    <span><button type="submit" class="btn btn-secondary w-100" id="generateReport"> PRINT USAGE SUMMARY</button></span>
-    <br>
-</div>
+ 
+
 </form>
+
+<br>
+
+<span><button type="submit" class="btn btn-secondary w-100" id="generateReportSummary"> PRINT USAGE SUMMARY</button></span>
+</div>
+
   </div>
 </body>
   
@@ -284,7 +273,7 @@ if (isset($_POST['clear_records'])) {
           </div> 
           <p class="card-text text-center"><span id="total-usage"><?php echo $totalUsed; ?></span> Litres</p>
           <?php
-            $usagePercentage = ($totalUsed / 12000) * 100;
+            $usagePercentage = ($totalUsed / 10470) * 100;
             if ($usagePercentage <= 50) {
               $progressBarColor = "bg-success";
               echo "<p class='alert alert-success'> Wonderful! Lets keep saving, you are within range!</p>";
@@ -297,10 +286,11 @@ if (isset($_POST['clear_records'])) {
             }
           ?>
           <div class="progress">
-            <div class="progress-bar <?php echo $progressBarColor; ?>" id="cost-progress" role="progressbar" style="width: <?php echo $usagePercentage; ?>%;" aria-valuenow="<?php echo $totalUsed; ?>" aria-valuemin="0" aria-valuemax="12000"></div>
+            <div class="progress-bar <?php echo $progressBarColor; ?>" id="cost-progress" role="progressbar" style="width: <?php echo $usagePercentage; ?>%;" aria-valuenow="<?php echo $totalUsed; ?>" aria-valuemin="0" aria-valuemax="3000"></div>
           </div>
           <br>
-          <p class="alert alert-info">Reccomended target: 6,000 Litres/ Month</p>
+          <p class="alert alert-dark text-center">Reccomended target: 10,470 Litres/ Month<br></p>
+          <a href="https://www.energysavingtrust.org.uk/sites/default/files/reports/AtHomewithWater%287%29.pdf" class="btn btn-dark w-100">Assumption: Daily Average Use for household = 349 litres</a>
         </div>
       </div>
     </div>
@@ -313,7 +303,7 @@ if (isset($_POST['clear_records'])) {
           </div> 
           <p class="card-text text-center"><span id="total-cost"><?php echo $totalCost; ?></span> Ksh</p>
           <?php
-            $costPercentage = ($totalCost / 3000) * 100;
+            $costPercentage = ($totalCost / 485) * 100;
             if ($costPercentage <= 50) {
               $progressBarColor = "bg-success";
               echo "<p class='alert alert-success'> Wonderful! Lets keep saving, you are within range!</p>";
@@ -332,10 +322,12 @@ if (isset($_POST['clear_records'])) {
             <div class="progress-bar <?php echo $progressBarColor; ?>" id="water-progress" role="progressbar" style="width: <?php echo $costPercentage; ?>%;" aria-valuenow="<?php echo $totalCost; ?>" aria-valuemin="0" aria-valuemax="3000"></div>
           </div>
           <br>
-          <p class="alert alert-info">Reccomended target: 1,350 Ksh/ Month</p>
+          <p class="alert alert-dark text-center">Reccomended target: 485 Ksh/ Month <br></p>
+          <a href="https://www.kenyans.co.ke/news/85089-nairobi-water-announces-new-prices-penalties#:~:text=One%20cubic%20meter%20is%20equal,meters%20will%20be%20charged%20Ksh70.#" class="btn btn-dark w-100"> Assumption: 1 litre = 45 shillings/ 1000 Litres</a>
         </div>
       </div>
     </div>
+    
   </div>
 </div>
 
@@ -475,14 +467,15 @@ $conn->close();
     datasets: [{
       label: 'Water Usage',
       data: <?php echo json_encode($data); ?>,
-      backgroundColor: 'green',
-      borderWidth: 1
+      backgroundColor: 'black',
+      borderWidth: 2,
+      borderColor: 'green',
     }]
   };
   var options = {
     scales: {
       xAxes: [{
-        display: false, // add this line to hide the x-axis
+        display: true // add this line to hide the x-axis
       }],
       yAxes: [{
         ticks: {
@@ -535,7 +528,7 @@ $data = array();
 if ($result->num_rows > 0) {
   while ($row = $result->fetch_assoc()) {
     $labels[] = $row['created_at'];
-    $data[] = $row['cost'];
+    $data[] = $row['cost']/1000;
   }
 }
 
@@ -553,7 +546,7 @@ $conn->close();
     datasets: [{
       label: 'Cost',
       data: <?php echo json_encode($data); ?>,
-      backgroundColor: 'red',
+      backgroundColor: 'black',
       borderWidth: 1
     }]
   };
@@ -583,12 +576,50 @@ $conn->close();
   printWindow.document.write(`
   <!DOCTYPE html>
 <html>
-<head>
-  <title>Water Usage Report</title>
-</head>
-<body>
-  <h1>Water Usage Report</h1>
 
+  <title>Water Usage Analysis Report</title>
+  <link href="assets/img/favicon.png" rel="icon">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+<body>
+<style>
+footer{
+  background-color: black;
+  color: white;
+  text-align: center;
+  padding: 10px;
+}
+body{
+  background-color: white;
+  color: black;
+  padding: 20px;
+    max-width: 800px;
+    margin: 0 auto;
+}
+html{
+  background-color: black;
+  color: white;
+}
+  h2{
+    text-align: center;
+  }
+  img { display: block; margin: 20px auto; width: 65%; }
+}
+  h2{
+    text-align: center;
+  }
+  img { display: block; margin: 20px auto; width: 85%; }
+</style>
+
+  <h2 style="background-color:black;color:white;">
+  <br>
+  <br>
+  <br>WATER USAGE ANALYSIS REPORT
+  
+  <br>
+  <br>
+  <br>
+  </h2>
   <?php
       // Connect to the database
       $servername = "localhost";
@@ -614,9 +645,6 @@ $conn->close();
       
       // Fetch the data and display it in the table
       if ($result->num_rows > 0) {
-        echo "<h3>Water Usage Report</h3>";
-        echo "<table>";
-        echo "<tr><th>Time and Date</th><th>Usage (litres)</th><th>Cost (KES)</th></tr>";
         while ($row = $result->fetch_assoc()) {
           // Update the highest and lowest usage and cost variables
           if ($row['usage'] > $highest_usage) {
@@ -631,41 +659,74 @@ $conn->close();
           if ($row['cost'] < $lowest_cost) {
             $lowest_cost = $row['cost'];
           }
-      
-          echo "<tr>";
-          echo "<td>" . $row['recorded_at'] . "</td>";
-          echo "<td>" . $row['usage'] . "</td>";
-          echo "<td>" . $row['cost'] . "</td>";
-          echo "</tr>";
+
         }
-        echo "</table>";
       } else {
-        echo "<p>No water usage data found.</p>";
+        echo "<p>No water usage data found. Please fill the data to have the Analysis</p>";
       }
       
       // Close the database connection
       $conn->close();
-      
-      // Display the highest and lowest usage and cost
-      echo "<h3>Highest and Lowest Usage and Cost</h3>";
-      echo "<p>Highest recorded usage: " . $highest_usage . " litres</p>";
-      echo "<p>Lowest recorded usage: " . $lowest_usage . " litres</p>";
-      echo "<p>Highest recorded cost: KES " . $highest_cost . "</p>";
-      echo "<p>Lowest recorded cost: KES " . $lowest_cost . "</p>";
-      
-      // Offer saving guidelines
-      echo "<h3>Saving Guidelines</h3>";
-      echo "<ol>";
-      echo "<li>Fix any leaks promptly.</li>";
-      echo "<li>Install water-saving showerheads and faucet aerators.</li>";
-      echo "<li>Only run the dishwasher and washing machine with full loads.</li>";
-      echo "<li>Collect rainwater for watering plants.</li>";
-      echo "<li>Water your garden during the early morning or late evening to reduce evaporation.</li>";
-      echo "<li>Turn off the tap while brushing your teeth or washing your face.</li>";
-      echo "</ol>";
       ?>
 
+
+<hr>
+<h2>SUMMARY OF YOUR WATER USAGE  </h2>
+ 
+<hr>
+<p>Here is a breakdown of your usage so far!</p>
+<ul>
+  <li>Highest recorded usage: <span class="highlight"><?php echo $highest_usage; ?> litres</span></li>
+  <li>Lowest recorded usage: <span class="highlight"><?php echo $lowest_usage; ?> litres</span></li>
+  <li>Highest recorded cost: <span class="highlight"><?php echo $highest_cost; ?> Ksh </span></li>
+  <li>Lowest recorded cost: <span class="highlight"><?php echo $lowest_cost; ?> Ksh </span></li>
+</ul>
+
+<hr>
+<h3>Your Usage Trend</h3>
+<hr>
+<img src="${waterUsageChart.toBase64Image()}" alt="Water Usage Chart"/>
+                <br>
+<hr>
 </body>
+<button onclick="window.print();" class="btn no-print"><i class="fas fa-print"></i> Click here to Print</button>
+<footer style="background-color:black;">
+<br>
+<p>By following the reccomended saving tips, you can make a big impact on your water usage and monthly bill while also helping the environment.</p>
+
+  <p>Thank you for being a responsible water user!</p>
+  <p>&copy; Water Usage Bill - Generated on <?php echo date("F j, Y"); ?></p>
+</footer>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+  }
+  @media print {
+    .no-print {
+        display: none;
+    }
+  h2 {
+    color: #006699;
+    font-size: 24px;
+    margin-top: 0;
+  }
+  .highlight {
+    font-weight: bold;
+    color: #006699;
+  }
+  h3 {
+    color: #006699;
+    font-size: 20px;
+    margin-top: 20px;
+  }
+  ul, ol {
+    padding-left: 20px;
+    margin-top: 10px;
+  }
+  li {
+    margin-bottom: 5px;
+  }
+</style>
 </html>
 
   `);
@@ -780,13 +841,13 @@ $conn->close();
     // Fetch the data and display it in the table
     if ($result->num_rows > 0) {
       while ($row = $result->fetch_assoc()) {
-        $amount = $row['usage'] * 100 ; // Calculate the amount
+        $amount = $row['cost']/1000 ; // Calculate the amount
         $total += $amount; // Add the amount to the total
 
         echo "<tr>";
         echo "<td>" . $row['created_at'] . "</td>";
-        echo "<td>" . $row['usage'] . " litres"."</td>";
-        echo "<td> 100 ksh</td>";
+        echo "<td>" . $row['cost'] . " litres"."</td>";
+        echo "<td> 45 ksh</td>";
         echo "<td>KES " . number_format($amount, 2) . "</td>";
         echo "</tr>";
       }
@@ -823,7 +884,7 @@ $conn->close();
 
   </script>
   <script>
-  document.getElementById('generateReport').addEventListener('click', printWaterUsageChart);
+  document.getElementById('generateReportSummary').addEventListener('click', printWaterUsageChart);
 
   function printWaterUsageChart() {
   var printWindow = window.open('', '_blank');
@@ -932,7 +993,7 @@ $conn->close();
 
         echo "<tr>";
         echo "<td>" . $row['created_at'] . "</td>";
-        echo "<td>" . $row['usage'] . "litres"."</td>";
+        echo "<td>" . $row['usage'] . " litres"."</td>";
         echo "</tr>";
       }
     }

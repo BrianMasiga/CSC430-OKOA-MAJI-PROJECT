@@ -84,7 +84,7 @@
           <ul class="list-unstyled alert alert-success">
   <li><i class="fas fa-check"></i> Monitor and track your water usage.</li>
   <li><i class="fas fa-check"></i> Provide you with real-time visual information on your water consumption and estimated bills.</li>
-  <li><i class="fas fa-check"></i> Adopt more water-efficient behaviours and reduce water waste through articles and resources.</li>
+  <li><i class="fas fa-check"></i> Adopt more water-efficient behaviours and reduce water waste through articles and community engagements.</li>
   <li><i class="fas fa-check"></i> generate reports on your usage trends so as to help you make more informed decisions based on your data.</li>
   <li><i class="fas fa-check"></i> Keep track and stay within budget by setting cost and usage targets and help them work towards saving more water and, in turn, money.</li>
 </ul>
