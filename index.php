@@ -36,20 +36,19 @@
 
   </header>
   <!-- End Header -->
-
-  <!-- Begin SideNav -->
-  <aside id="sidebar" class="sidebar">
+ <!-- Begin SideNav -->
+ <aside id="sidebar" class="sidebar">
     <ul class="sidebar-nav" id="sidebar-nav">
       <li class="nav-item">
-        <a class="nav-link " href="index.php">
+        <a class="nav-link collapsed" href="index.php">
           <i class="bi bi-grid"></i>
           <span>Home</span>
         </a>
       </li>
       <li class="nav-item">
-        <a class="nav-link collapsed" href="readings.php">
+        <a class="nav-link" href="readings.php">
           <i class="bi bi-bar-chart"></i>
-          <span>Readings</span>
+          <span>Analysis</span>
         </a>
         </li>
       <li class="nav-item">
@@ -58,11 +57,7 @@
           <span>Articles</span>
         </a>
       </li>
-      <li class="nav-item">
-        <a class="nav-link collapsed" href="community.php">
-          <i class="bi bi-people"></i>
-          <span>Community</span>
-        </a>
+        </li>
       <li class="nav-item">
       <li class="nav-item">
         <a class="nav-link collapsed" href="login.php">
@@ -84,7 +79,7 @@
           <ul class="list-unstyled alert alert-success">
   <li><i class="fas fa-check"></i> Monitor and track your water usage.</li>
   <li><i class="fas fa-check"></i> Provide you with real-time visual information on your water consumption and estimated bills.</li>
-  <li><i class="fas fa-check"></i> Adopt more water-efficient behaviours and reduce water waste through articles and resources.</li>
+  <li><i class="fas fa-check"></i> Adopt more water-efficient behaviours and reduce water waste through articles.</li>
   <li><i class="fas fa-check"></i> generate reports on your usage trends so as to help you make more informed decisions based on your data.</li>
   <li><i class="fas fa-check"></i> Keep track and stay within budget by setting cost and usage targets and help them work towards saving more water and, in turn, money.</li>
 </ul>
