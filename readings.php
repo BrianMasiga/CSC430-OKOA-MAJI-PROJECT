@@ -149,17 +149,19 @@ if (!empty($_POST)) {
 
   // Check if the current input is the same as the previous input
   $row = array();
-$sql = "SELECT current_reading, previous_reading, cost_per_liter FROM water_usage ORDER BY water_usage_id DESC LIMIT 1";
+$sql = "SELECT current_reading, previous_reading, cost_per_liter, user_id FROM water_usage ORDER BY water_usage_id DESC LIMIT 1";
 $result = $conn->query($sql);
+$user_id = $row["user_id"];
 
 if ($result && $result->num_rows > 0) {
   $row = $result->fetch_assoc();
+  
 }
 
   if ($row['current_reading'] != $current_reading) {
     // Insert the data into the table
-    $sql = "INSERT INTO water_usage (previous_reading, current_reading, cost_per_liter) 
-            VALUES ('$previous_reading', '$current_reading', '$cost_per_liter')";
+    $sql = "INSERT INTO water_usage (previous_reading, current_reading, cost_per_liter, user_id) 
+            VALUES ('$previous_reading', '$current_reading', '$cost_per_liter', '1')";
 
     if ($conn->query($sql) === TRUE) {
       echo "";
