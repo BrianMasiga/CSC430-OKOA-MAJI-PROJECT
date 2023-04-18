@@ -42,8 +42,8 @@
   </header>
   <!-- End Header -->
 
-     <!-- Begin SideNav -->
-  <aside id="sidebar" class="sidebar">
+ <!-- Begin SideNav -->
+ <aside id="sidebar" class="sidebar">
     <ul class="sidebar-nav" id="sidebar-nav">
       <li class="nav-item">
         <a class="nav-link collapsed" href="index.php">
@@ -54,7 +54,7 @@
       <li class="nav-item">
         <a class="nav-link" href="readings.php">
           <i class="bi bi-bar-chart"></i>
-          <span>Readings</span>
+          <span>Analysis</span>
         </a>
         </li>
       <li class="nav-item">
@@ -63,11 +63,6 @@
           <span>Articles</span>
         </a>
       </li>
-      <li class="nav-item">
-        <a class="nav-link collapsed" href="community.php">
-          <i class="bi bi-people"></i>
-          <span>Community</span>
-        </a>
         </li>
       <li class="nav-item">
       <li class="nav-item">
