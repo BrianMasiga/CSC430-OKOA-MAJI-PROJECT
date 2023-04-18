@@ -88,98 +88,207 @@
             </ol>
         </nav>
     </div>
-    <div class="col-lg-12">
-    
-        <form id="post-form">
-            <div class="row mb-3">
-                <label for="inputUsername" class="col-sm-2 col-form-label">Username</label>
-                <div class="col-sm-10">
-                    <input type="text" class="form-control" id="inputUsername" maxlength="10" required>
-                </div>
-            </div>
-            <div class="row mb-3">
-                <label for="inputTitle" class="col-sm-2 col-form-label">Title</label>
-                <div class="col-sm-10">
-                    <input type="text" class="form-control" id="inputTitle" maxlength="15" required>
-                </div>
-            </div>
-            <div class="row mb-3">
-                <label for="inputMessage" class="col-sm-2 col-form-label">Message </label>
-                <div class="col-sm-10">
-                    <textarea class="form-control" style="height: 100px" id="inputMessage" maxlength="250" required></textarea>
-                </div>
-            </div>
-    
-            <div class="row mb-3">
-                <div class="col-sm-10 text-center mx-auto">
-                    <button type="submit" class="btn btn-primary">POST TO COMMUNITY</button>
-                </div>
-            </div>
-        </form>
-    
-        <div id="posts"></div>
-    
-        <script>
-            const postForm = document.querySelector('#post-form');
-            const usernameInput = document.querySelector('#inputUsername');
-            const titleInput = document.querySelector('#inputTitle');
-            const messageInput = document.querySelector('#inputMessage');
-            const postsDiv = document.querySelector('#posts');
-            let postId = 1;
-    
-            postForm.addEventListener('submit', (e) => {
-                e.preventDefault();
-    
-                // Create a new post object with the user's input and current timestamp
-                const post = {
-                    id: postId,
-                    username: usernameInput.value,
-                    title: titleInput.value,
-                    message: messageInput.value,
-                    timestamp: new Date()
-                };
-                postId++;
-    
-                // Add the post to the DOM
-                const postDiv = document.createElement('div');
-                postDiv.classList.add('post');
-                postDiv.innerHTML = `
-                    <hr>
-                    <p>Title: <b>${post.title}</b></p>
-                    <h6 class="timestamp">Posted on: ${post.timestamp.toLocaleString()}</h6>
-                    <h6 class="username">Author: ${post.username}</h6>
-                    <p class="message">${post.message}</p>
-                    <div class="actions">
-                        <button class="btn btn-primary" onclick="editPost(${post.id})">Edit</button>
-                        <button class="btn btn-danger" onclick="deletePost(${post.id})">Delete</button>
-                    </div>
-                    <hr>
-                `;
-                postsDiv.insertBefore(postDiv, postsDiv.firstChild);
-    
-                            // Reset the form
-            postForm.reset();
+    <div class="card-title text-center alert alert-primary" >ENGAGE WITH THE COMMUNITY ON CONSERVATION!</div>
+
+    <div class="card mt-4 mb-6">
+    <div class="container mt-4 mb-4">
+   
+    <?php
+// Define database connection constants
+define('DB_HOST', 'localhost');
+define('DB_USERNAME', 'admin');
+define('DB_PASSWORD', 'admin1234');
+define('DB_NAME', 'okoamaji');
+
+// Connect to the database
+$conn = mysqli_connect(DB_HOST, DB_USERNAME, DB_PASSWORD, DB_NAME);
+
+if (!$conn) {
+  die('Connection failed: ' . mysqli_connect_error());
+}
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+  // Save a new post
+  $username = mysqli_real_escape_string($conn, $_POST['username']);
+  $title = mysqli_real_escape_string($conn, $_POST['title']);
+  $message = mysqli_real_escape_string($conn, $_POST['message']);
+
+  $sql = "INSERT INTO community_posts (username, title, message) VALUES ('$username', '$title', '$message')";
+  $result = mysqli_query($conn, $sql);
+
+  if (!$result) {
+    die(mysqli_error($conn));
+  }
+}
+
+mysqli_close($conn);
+?>
+
+<form id="post-form">
+  <div class="row mt-4 mb-3">
+    <label for="inputUsername" class="col-lg-12 col-form-label">Username</label>
+    <div class="col-sm-12">
+      <input type="text" class="form-control" id="inputUsername" maxlength="10" required>
+    </div>
+  </div>
+  <div class="row mb-3">
+    <label for="inputTitle" class="col-lg-12 col-form-label">Title</label>
+    <div class="col-sm-12">
+      <input type="text" class="form-control" id="inputTitle" maxlength="15" required>
+    </div>
+  </div>
+  <div class="row mb-5">
+    <label for="inputMessage" class="col-lg-12 col-form-label">Message </label>
+    <div class="col-sm-12">
+      <textarea class="form-control" style="height: 100px" id="inputMessage" maxlength="250" required></textarea>
+    </div>
+  </div>
+
+  <div class="row mb-3">
+    <div class="col-sm-10 text-center mx-auto">
+      <button type="submit" class="btn btn-primary">POST TO COMMUNITY</button>
+    </div>
+  </div>
+</form>
+
+<table id="posts" class="table">
+  <thead>
+    <tr>
+      <th>ID</th>
+      <th>Title</th>
+      <th>Username</th>
+      <th>Message</th>
+      <th>Created At</th>
+    </tr>
+  </thead>
+  <tbody></tbody>
+</table>
+
+<script>
+const postForm = document.querySelector('#post-form');
+  const usernameInput = document.querySelector('#inputUsername');
+  const titleInput = document.querySelector('#inputTitle');
+  const messageInput = document.querySelector('#inputMessage');
+  const postsTableBody = document.querySelector('#posts tbody');
+
+  // Load posts from database on page load
+  window.addEventListener('load', async () => {
+    try {
+      const response = await fetch('/get-posts.php');
+      const posts = await response.json();
+      displayPosts(posts);
+    } catch (error) {
+      console.error(error);
+    }
+  });
+
+  postForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    try {
+      // Create a new post object with the user's input and current timestamp
+      const post = {
+        username: usernameInput.value,
+        title: titleInput.value,
+        message: messageInput.value,
+      };
+
+      // Save the post to the database
+      const response = await fetch('/add-post.php', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(post),
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const savedPost = await response.json();
+
+      // Add the post to the table
+      addPostToTable(savedPost);
+
+      // Reset the form
+      postForm.reset();
+    } catch (error) {
+      console.error(error);
+    }
+  });
+
+  function addPostToTable(post) {
+    const row = document.createElement('tr');
+    row.innerHTML = `
+      <td>${post.id}</td>
+      <td>${post.title}</td>
+      <td>${post.username}</td>
+      <td>${post.message}</td>
+      <td>${new Date(post.created_at).toLocaleString()}</td>
+      <td>
+        <button class="btn btn-primary" onclick="editPost(${post.id})">Edit</button>
+        <button class="btn btn-danger" onclick="deletePost(${post.id})">Delete</button>
+      </td>
+    `;
+    postsTableBody.appendChild(row);
+  }
+
+  async function editPost(id) {
+    try {
+      // Get the post from the database
+      const response = await fetch(`/get-post.php?id=${id}`);
+      const post = await response.json();
+
+      // Prompt the user for the new message
+      const newMessage = prompt('Enter new message:', post.message);
+
+      if (newMessage !== null && newMessage.trim() !== '') {
+        // Update the post in the database
+        post.message = newMessage.trim();
+        const updateResponse = await fetch(`/update-post.php?id=${id}`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(post),
         });
 
-        function editPost(id) {
-            const postDiv = document.querySelector(`#posts .post:nth-child(${id})`);
-            const messageDiv = postDiv.querySelector('.message');
-            const message = messageDiv.textContent.trim();
-
-            const newMessage = prompt('Enter new message:', message);
-
-            if (newMessage !== null && newMessage.trim() !== '') {
-                messageDiv.textContent = newMessage.trim();
-                const timestampDiv = postDiv.querySelector('.timestamp');
-                timestampDiv.textContent = `Edited on: ${new Date().toLocaleString()}`;
-            }
+        if (!updateResponse.ok) {
+          throw new Error(`HTTP error! status: ${updateResponse.status}`);
         }
 
-        function deletePost(id) {
-            const postDiv = document.querySelector(`#posts .post:nth-child(${id})`);
-            postDiv.parentNode.removeChild(postDiv);
-        }
-    </script>
+        // Update the post in the table
+        const row = document.querySelector(`#posts tr[data-post-id="${id}"]`);
+        row.querySelector('td:nth-child(4)').textContent = newMessage.trim();
+        row.querySelector('td:nth-child(5)').textContent = `Edited on: ${new Date().toLocaleString()}`;
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  async function deletePost(id) {
+  try {
+    // Delete the post from the database
+    const response = await fetch(`/delete-post.php?id=${id}`, {
+      method: 'DELETE',
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    // Remove the post from the table
+    const row = document.querySelector(`#posts tr[data-post-id="${id}"]`);
+    row.remove();
+  } catch (error) {
+    console.error(error);
+  }
+}
+</script>
+
+</div>
 </div>
     </section>
 

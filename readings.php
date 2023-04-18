@@ -149,7 +149,7 @@ if (!empty($_POST)) {
 
   // Check if the current input is the same as the previous input
   $row = array();
-$sql = "SELECT current_reading, previous_reading, cost_per_liter FROM water_usage ORDER BY id DESC LIMIT 1";
+$sql = "SELECT current_reading, previous_reading, cost_per_liter FROM water_usage ORDER BY water_usage_id DESC LIMIT 1";
 $result = $conn->query($sql);
 
 if ($result && $result->num_rows > 0) {
@@ -375,7 +375,7 @@ if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
 
-$sql = "SELECT id, previous_reading, current_reading, cost_per_liter, `usage`, cost, created_at FROM water_usage";
+$sql = "SELECT water_usage_id, previous_reading, current_reading, cost_per_liter, `usage`, cost, created_at FROM water_usage";
 $result = $conn->query($sql);
 
 $data = array();
@@ -791,7 +791,7 @@ $conn = new mysqli($servername, $username, $password, $dbname);
 if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
-$sql = "SELECT * FROM users WHERE id = 1"; // Replace with the desired user ID
+$sql = "SELECT * FROM users WHERE user_id = 1"; // Replace with the desired user ID
 $result = $conn->query($sql);
 
 if ($result->num_rows > 0) {
@@ -940,7 +940,7 @@ $conn = new mysqli($servername, $username, $password, $dbname);
 if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
-$sql = "SELECT * FROM users WHERE id = 1"; // Replace with the desired user ID
+$sql = "SELECT * FROM users WHERE user_id = 1"; // Replace with the desired user ID
 $result = $conn->query($sql);
 
 if ($result->num_rows > 0) {
@@ -950,7 +950,7 @@ if ($result->num_rows > 0) {
     echo "<p>Name: " . $row["first_name"] ." ".$row["last_name"] . "</p>";
     echo "<p>Email Address: " . $row["email"] . "</p>";
 } else {
-    echo "<p>No user information found.</p>";
+    echo "<p></p>";
 }
 
 $conn->close();

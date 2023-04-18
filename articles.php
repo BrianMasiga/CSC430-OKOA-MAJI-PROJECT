@@ -175,7 +175,7 @@ if ($conn->connect_error) {
 }
 
 // Query database for articles
-$sql = "SELECT id, title, image_url, content, created_at FROM articles";
+$sql = "SELECT article_id, title, image_url, content, created_at FROM articles";
 $result = $conn->query($sql);
 
 // Generate HTML for each article
